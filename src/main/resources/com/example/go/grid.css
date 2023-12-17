@@ -1,6 +1,6 @@
 .grid-pane {
     -fx-background-color: #b6853b;
-    -fx-border-color: black;
-    -fx-border-width: 2px;
+    -fx-border-color: white;
+    -fx-border-width: 10px;
 }
 
