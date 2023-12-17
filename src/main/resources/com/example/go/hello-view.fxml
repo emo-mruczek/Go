@@ -8,11 +8,11 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" fillWidth="false" prefHeight="644.0" prefWidth="699.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.go.HelloController">
+<VBox alignment="CENTER" fillWidth="false" prefHeight="1000.0" prefWidth="1000.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.go.HelloController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
-   <GridPane fx:id="grid" alignment="CENTER_LEFT" prefHeight="400.0" prefWidth="400.0" styleClass="grid-pane" stylesheets="@grid.css">
+   <GridPane fx:id="grid" alignment="CENTER_LEFT" prefHeight="653.0" prefWidth="672.0" styleClass="grid-pane" stylesheets="@grid.css">
      <columnConstraints>
          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
