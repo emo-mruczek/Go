@@ -6,20 +6,44 @@ import javafx.scene.layout.GridPane;
 
 public class Board {
 
+
+  private final  GridPane gp;
+  private final int numRows;
+  private final int numColumns;
+
   public Board(int numRows, int numColumns, GridPane grid) {
 
-    double cellWidth = grid.getWidth() / numColumns;
-    double cellHeight = grid.getHeight() / numRows;
+    this.gp = grid;
+    this.numRows = numRows;
+    this.numColumns = numColumns;
 
-    for (int row = 0; row < numRows; row++) {
-      for (int col = 0; col < numColumns; col++) {
-        Image image = new Image("C:/Users/krokc/Desktop/test.png");
+    drawBoard();
+
+  }
+
+  private void drawBoard() {
+    double cellWidth = gp.getWidth() / numRows;
+    double cellHeight = gp.getHeight() / numColumns;
+
+    for (int row = 1; row < numRows - 1; row++) {
+      for (int col = 1; col < numColumns - 1; col++) {
+        Image image = new Image("C:/Users/krokc/Desktop/tp/s.png");
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(cellWidth);
         imageView.setFitHeight(cellHeight);
-        grid.add(imageView, row, col);
+        gp.add(imageView, col, row);
       }
     }
+
+    for (int col = 1; col < numColumns - 1; col++) {
+      Image image = new Image("C:/Users/krokc/Desktop/tp/d.png");
+      ImageView imageView = new ImageView(image);
+      imageView.setFitWidth(cellWidth);
+      imageView.setFitHeight(cellHeight);
+      gp.add(imageView, col, numRows);
+    }
+
+
   }
 
 
