@@ -1,23 +1,23 @@
 package com.example.go;
 
+import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
-
 import java.util.logging.Level;
 
 public class Board {
 
-  private final GridPane gp;
-  private final int numRows;
-  private final int numColumns;
+  @FXML
+  private GridPane gp = new GridPane();
+  private int numRows;
+  private int numColumns;
   double cellWidth;
   double cellHeight;
-  public Board(int numRows, int numColumns, GridPane grid) {
-    this.gp = grid;
+  public void initialize(int numRows, int numColumns) {
     this.numRows = numRows;
     this.numColumns = numColumns;
 
@@ -34,6 +34,8 @@ public class Board {
 
 
     //TODO: kamienie totalnie rozwalają 19x19, trzeba dynamicznie dostosowywac ich wielkosc
+    //TODO: najlepiej zeby kamienie w jakiejs osobnej metodzie sie robily, zeby to jakos uporzadkowac
+    //TODO: albo w ogole w osobnej klasie
     for (int row = 1; row < numRows - 1; row++) {
       for (int col = 1; col < numColumns - 1; col++) {
         Image image = new Image("C:/Users/krokc/Desktop/tp/s.png");
