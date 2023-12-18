@@ -12,8 +12,10 @@ public class HelloController {
   @FXML
   private GridPane grid;
 
-  int numRows = 10;
-  int numColumns = 10;
+
+  int numRows = 9;
+  int numColumns = 9;
+
 
   @FXML
   protected void onHelloButtonClick() {
