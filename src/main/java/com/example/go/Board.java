@@ -6,6 +6,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
 
+import java.util.logging.Level;
+
 public class Board {
 
   private final GridPane gp;
@@ -22,6 +24,8 @@ public class Board {
   }
 
   private void drawBoard() {
+    MyLogger.logger.log(Level.INFO, "Drawing a board!");
+
     double cellWidth = gp.getWidth() / numColumns;
     double cellHeight = gp.getHeight() / numRows;
 

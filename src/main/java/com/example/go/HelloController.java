@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
+import java.util.logging.Level;
+
 
 public class HelloController {
 
@@ -20,6 +22,8 @@ public class HelloController {
   @FXML
   protected void onHelloButtonClick() {
     welcomeText.setText("Welcome to JavaFX Application!");
+
+    MyLogger.logger.log(Level.INFO, "Clicked on a button!");
 
     Board board = new Board(numRows, numColumns, grid);
 
