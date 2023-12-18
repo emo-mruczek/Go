@@ -25,38 +25,37 @@ public class Board {
     double cellWidth = gp.getWidth() / numColumns;
     double cellHeight = gp.getHeight() / numRows;
 
-    gp.setAlignment(Pos.CENTER);
 
-    for (int row = 0; row < numRows; row++) {
-      for (int col = 0; col < numColumns; col++) {
-        Image image = new Image("C:/Users/Aldona/Desktop/test.png");
+    for (int row = 1; row < numRows - 1; row++) {
+      for (int col = 1; col < numColumns - 1; col++) {
+        Image image = new Image("C:/Users/krokc/Desktop/tp/s.png");
         ImageView imageView = new ImageView(image);
         Circle kamien = new Circle(20);
 
-        // Set initial transparency
-        kamien.setOpacity(0); // Adjust the value as needed
+
+        kamien.setOpacity(0.15);
 
         kamien.setOnMouseClicked(event -> {
-          // Handle button click action
+
           System.out.println("Button clicked!");
 
-          // Make the circle visible on click
-          kamien.setOpacity(1.0);
+
+         kamien.setOpacity(1.0);
         });
 
         imageView.setFitWidth(cellWidth);
         imageView.setFitHeight(cellHeight);
-        
-          gp.add(imageView, col, row);
 
-        // Set the alignment of the cell
+        gp.add(imageView, col, row);
+
+
         gp.setAlignment(Pos.CENTER);
 
-        // You can set some padding or spacing if needed
+
         GridPane.setMargin(kamien, new javafx.geometry.Insets(5));
 
         gp.add(kamien, col, row);
-       gp.add(imageView, col, row);
+
       }
     }
 
