@@ -28,4 +28,28 @@ public class HelloController {
     Board board = new Board(numRows, numColumns, grid);
 
   }
+
+  @FXML
+  private void smallClicked() {
+    MyLogger.logger.log(Level.INFO, "Small clicked!");
+
+    Board board = new Board(9, 9, grid);
+  }
+
+  //TODO: is it a right size?? im not feeling like checking it lol
+  @FXML
+  private void mediumClicked() {
+    MyLogger.logger.log(Level.INFO, "Medium clicked!");
+
+    Board board = new Board(13, 13, grid);
+  }
+
+  //TODO: omg its so ugly whyyyyyyyy ;-;-;-;
+  @FXML
+  private void largeClicked() {
+    MyLogger.logger.log(Level.INFO, "Large clicked");
+
+    Board board = new Board(19, 19, grid);
+  }
+
 }

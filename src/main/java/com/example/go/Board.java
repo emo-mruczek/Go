@@ -25,12 +25,15 @@ public class Board {
   }
 
   private void drawBoard() {
+    //TODO: clean-up
+
     MyLogger.logger.log(Level.INFO, "Drawing a board!");
 
     this.cellWidth = gp.getWidth() / numColumns;
     this.cellHeight = gp.getHeight() / numRows;
 
 
+    //TODO: kamienie totalnie rozwalają 19x19, trzeba dynamicznie dostosowywac ich wielkosc
     for (int row = 1; row < numRows - 1; row++) {
       for (int col = 1; col < numColumns - 1; col++) {
         Image image = new Image("C:/Users/krokc/Desktop/tp/s.png");
@@ -61,9 +64,8 @@ public class Board {
       }
     }
 
-    String path = "C:/Users/krokc/Desktop/tp/";
+    String path = "C:/Users/krokc/Desktop/tp/"; //change accordingly TODO: make it not dependent on an absolute path
 
-// Adding images to the grid
     for (int col = 1; col < numColumns - 1; col++) {
       addImageToCell(gp, path + "g.png", col, 0);
       addImageToCell(gp, path + "d.png", col, numRows);
@@ -74,13 +76,11 @@ public class Board {
       addImageToCell(gp, path + "p.png", numColumns, row);
     }
 
-// Adding corner images
+
     addImageToCell(gp, path + "gl.png", 0, 0);
     addImageToCell(gp, path + "gp.png", numColumns, 0);
     addImageToCell(gp, path + "dl.png", 0, numRows);
     addImageToCell(gp, path + "dp.png", numColumns, numRows);
-
-
   }
 
   private void addImageToCell(GridPane gp, String imagePath, int col, int row) {
@@ -90,7 +90,5 @@ public class Board {
     imageView.setFitHeight(cellHeight);
     gp.add(imageView, col, row);
   }
-
-
 
 }
