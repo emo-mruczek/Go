@@ -6,7 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
-
+import java.io.FileNotFoundException;
 import java.util.logging.Level;
 
 public class Board {
@@ -18,7 +18,7 @@ public class Board {
   double cellWidth;
   double cellHeight;
 
-  public void initialize(int numRows, int numColumns) {
+  public void initialize(int numRows, int numColumns) throws FileNotFoundException {
     this.numRows = numRows;
     this.numColumns = numColumns;
 
@@ -26,7 +26,7 @@ public class Board {
     addStones();
   }
 
-  private void drawBoard() {
+  private void drawBoard() throws FileNotFoundException {
     //TODO: clean-up
 
     MyLogger.logger.log(Level.INFO, "Drawing a board!");
@@ -78,7 +78,7 @@ public class Board {
     for (int row = 0; row < numRows; row++) {
       for (int col = 0; col < numColumns; col++) {
 
-        Circle stone = new Circle(cellWidth/3);
+        Circle stone = new Circle(cellWidth / 3);
         stone.setOpacity(0.0);
 
         stone.setOnMouseClicked(event -> {

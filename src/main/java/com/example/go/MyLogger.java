@@ -1,6 +1,7 @@
 package com.example.go;
 
 import java.util.logging.*;
+
 public class MyLogger {
 
   private MyLogger() {
