@@ -78,9 +78,8 @@ public class Board {
     for (int row = 0; row < numRows; row++) {
       for (int col = 0; col < numColumns; col++) {
 
-        Circle stone = new Circle(10);
-
-        stone.setOpacity(0.15); 
+        Circle stone = new Circle(cellWidth/3);
+        stone.setOpacity(0.0);
 
         stone.setOnMouseClicked(event -> {
           MyLogger.logger.log(Level.INFO, "Stone clicked!");

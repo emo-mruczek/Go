@@ -41,7 +41,7 @@ public class ChoiceController {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("board-view.fxml"));
     Scene scene = new Scene(loader.load());
     Stage stage = new Stage();
-    stage.setTitle("New Window");
+    stage.setTitle("Go");
     stage.setScene(scene);
     stage.show();
     Board controller = loader.getController();
