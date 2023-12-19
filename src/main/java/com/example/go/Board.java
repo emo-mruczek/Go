@@ -18,7 +18,7 @@ public class Board {
   double cellWidth;
   double cellHeight;
 
-  public void initialize(int numRows, int numColumns) throws FileNotFoundException {
+  public void initialize(int numRows, int numColumns)  {
     this.numRows = numRows;
     this.numColumns = numColumns;
 
@@ -26,7 +26,7 @@ public class Board {
     addStones();
   }
 
-  private void drawBoard() throws FileNotFoundException {
+  private void drawBoard()  {
     //TODO: clean-up
 
     MyLogger.logger.log(Level.INFO, "Drawing a board!");
