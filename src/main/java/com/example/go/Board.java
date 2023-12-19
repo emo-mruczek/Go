@@ -2,8 +2,6 @@ package com.example.go;
 
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -76,25 +74,22 @@ public class Board {
 
   private void addStones() {
     MyLogger.logger.log(Level.INFO, "Adding stones!");
-    gp.setAlignment(Pos.CENTER);
 
     for (int row = 0; row < numRows; row++) {
       for (int col = 0; col < numColumns; col++) {
 
-        Circle kamien = new Circle(10);
+        Circle stone = new Circle(10);
 
-        kamien.setOpacity(0.15);
+        stone.setOpacity(0.15); 
 
-        kamien.setOnMouseClicked(event -> {
-          MyLogger.logger.log(Level.INFO, "Kamien clicked!");
-          kamien.setOpacity(1.0);
+        stone.setOnMouseClicked(event -> {
+          MyLogger.logger.log(Level.INFO, "Stone clicked!");
+          stone.setOpacity(1.0);
         });
 
-        GridPane.setHalignment(kamien, HPos.CENTER);
+        GridPane.setHalignment(stone, HPos.CENTER);
 
-       //GridPane.setMargin(kamien, new Insets(5));
-
-        gp.add(kamien, col, row);
+        gp.add(stone, col, row);
       }
     }
   }
