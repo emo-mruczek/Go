@@ -36,10 +36,6 @@ public class Board {
     this.cellWidth = gp.getWidth() / numColumns;
     this.cellHeight = gp.getHeight() / numRows;
 
-
-    //TODO: kamienie totalnie rozwalają 19x19, trzeba dynamicznie dostosowywac ich wielkosc
-    //TODO: najlepiej zeby kamienie w jakiejs osobnej metodzie sie robily, zeby to jakos uporzadkowac
-    //TODO: albo w ogole w osobnej klasie
     for (int row = 1; row < numRows - 1; row++) {
       for (int col = 1; col < numColumns - 1; col++) {
         Image image = new Image("C:/Users/krokc/Desktop/tp/s.png");
@@ -49,7 +45,6 @@ public class Board {
         imageView.setFitHeight(cellHeight);
 
         gp.add(imageView, col, row);
-
       }
     }
 
@@ -57,19 +52,18 @@ public class Board {
 
     for (int col = 1; col < numColumns - 1; col++) {
       addImageToCell(gp, path + "g.png", col, 0);
-      addImageToCell(gp, path + "d.png", col, numRows);
+      addImageToCell(gp, path + "d.png", col, numRows - 1);
     }
 
     for (int row = 1; row < numRows - 1; row++) {
       addImageToCell(gp, path + "l.png", 0, row);
-      addImageToCell(gp, path + "p.png", numColumns, row);
+      addImageToCell(gp, path + "p.png", numColumns - 1, row);
     }
 
-
     addImageToCell(gp, path + "gl.png", 0, 0);
-    addImageToCell(gp, path + "gp.png", numColumns, 0);
-    addImageToCell(gp, path + "dl.png", 0, numRows);
-    addImageToCell(gp, path + "dp.png", numColumns, numRows);
+    addImageToCell(gp, path + "gp.png", numColumns - 1, 0);
+    addImageToCell(gp, path + "dl.png", 0, numRows - 1);
+    addImageToCell(gp, path + "dp.png", numColumns - 1, numRows - 1);
   }
 
   private void addImageToCell(GridPane gp, String imagePath, int col, int row) {
@@ -84,8 +78,8 @@ public class Board {
     MyLogger.logger.log(Level.INFO, "Adding stones!");
     gp.setAlignment(Pos.CENTER);
 
-    for (int row = 0; row < numRows - 1; row++) {
-      for (int col = 0; col < numColumns - 1; col++) {
+    for (int row = 0; row < numRows; row++) {
+      for (int col = 0; col < numColumns; col++) {
 
         Circle kamien = new Circle(10);
 
