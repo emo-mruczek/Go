@@ -38,17 +38,17 @@ public class ChoiceController {
     try {
       MyLogger.logger.log(Level.INFO, "Initializing " + size + "x" + size + " board!");
 
-      //Socket socket = new Socket("localhost", 4444);
-      //String message = String.valueOf(size);
-      //sendMessage(message, socket);
+      Socket socket = new Socket("localhost", 4444);
+      String message = String.valueOf(size);
+      sendMessage(message, socket);
 
       FXMLLoader loader = new FXMLLoader(getClass().getResource("board-view.fxml"));
       Scene scene = new Scene(loader.load());
       Stage stage = new Stage();
 
-      //stage.setOnCloseRequest(event -> {
-      //  sendMessage("BYE " + "none", socket);
-      //});
+      stage.setOnCloseRequest(event -> {
+        sendMessage("BYE " + "none", socket);
+      });
 
       stage.setTitle("Go");
       stage.setScene(scene);

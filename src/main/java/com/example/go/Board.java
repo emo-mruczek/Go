@@ -15,16 +15,14 @@ public class Board {
 
   @FXML
   private GridPane gp = new GridPane();
-  private int numRows;
-  private int numColumns;
+  private int size;
   double cellWidth;
   double cellHeight;
 
   boolean Player = true;
 
   public void initialize(int size) {
-    this.numRows = size;
-    this.numColumns = size;
+    this.size = size;
 
     drawBoard();
     addStones();
@@ -35,11 +33,11 @@ public class Board {
 
     MyLogger.logger.log(Level.INFO, "Drawing a board!");
 
-    this.cellWidth = gp.getWidth() / numColumns;
-    this.cellHeight = gp.getHeight() / numRows;
+    this.cellWidth = gp.getWidth() / size;
+    this.cellHeight = gp.getHeight() / size;
 
-    for (int row = 1; row < numRows - 1; row++) {
-      for (int col = 1; col < numColumns - 1; col++) {
+    for (int row = 1; row < size - 1; row++) {
+      for (int col = 1; col < size - 1; col++) {
         Image image = new Image("C:/Users/krokc/Desktop/tp/s.png");
         ImageView imageView = new ImageView(image);
 
@@ -52,20 +50,20 @@ public class Board {
 
     String path = "C:/Users/krokc/Desktop/tp/"; //change accordingly TODO: make it not dependent on an absolute path
 
-    for (int col = 1; col < numColumns - 1; col++) {
+    for (int col = 1; col < size - 1; col++) {
       addImageToCell(gp, path + "g.png", col, 0);
-      addImageToCell(gp, path + "d.png", col, numRows - 1);
+      addImageToCell(gp, path + "d.png", col, size - 1);
     }
 
-    for (int row = 1; row < numRows - 1; row++) {
+    for (int row = 1; row < size - 1; row++) {
       addImageToCell(gp, path + "l.png", 0, row);
-      addImageToCell(gp, path + "p.png", numColumns - 1, row);
+      addImageToCell(gp, path + "p.png", size - 1, row);
     }
 
     addImageToCell(gp, path + "gl.png", 0, 0);
-    addImageToCell(gp, path + "gp.png", numColumns - 1, 0);
-    addImageToCell(gp, path + "dl.png", 0, numRows - 1);
-    addImageToCell(gp, path + "dp.png", numColumns - 1, numRows - 1);
+    addImageToCell(gp, path + "gp.png", size - 1, 0);
+    addImageToCell(gp, path + "dl.png", 0, size - 1);
+    addImageToCell(gp, path + "dp.png", size - 1, size - 1);
   }
 
   private void addImageToCell(GridPane gp, String imagePath, int col, int row) {
@@ -79,8 +77,8 @@ public class Board {
   private void addStones() {
     MyLogger.logger.log(Level.INFO, "Adding stones!");
 
-    for (int row = 0; row < numRows; row++) {
-      for (int col = 0; col < numColumns; col++) {
+    for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
 
         Circle stone = new Circle(cellWidth / 3);
         stone.setOpacity(0.0);
