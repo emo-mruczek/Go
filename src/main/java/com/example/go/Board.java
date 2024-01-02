@@ -22,9 +22,9 @@ public class Board {
 
   boolean Player = true;
 
-  public void initialize(int numRows, int numColumns) {
-    this.numRows = numRows;
-    this.numColumns = numColumns;
+  public void initialize(int size) {
+    this.numRows = size;
+    this.numColumns = size;
 
     drawBoard();
     addStones();
