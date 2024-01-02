@@ -4,10 +4,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.util.logging.Level;
-
 
 public class ChoiceController {
 
@@ -19,7 +17,6 @@ public class ChoiceController {
     initializeBoard(9, 9);
   }
 
-  //TODO: is it a right size?? im not feeling like checking it lol
   @FXML
   private void mediumClicked() throws IOException {
     MyLogger.logger.log(Level.INFO, "Medium clicked!");
@@ -27,7 +24,6 @@ public class ChoiceController {
     initializeBoard(13, 13);
   }
 
-  //TODO: omg its so ugly whyyyyyyyy ;-;-;-;
   @FXML
   private void largeClicked() throws IOException {
     MyLogger.logger.log(Level.INFO, "Large clicked");

@@ -6,8 +6,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
-import java.io.FileNotFoundException;
+
 import java.util.logging.Level;
+
+import javafx.scene.paint.Color;
 
 public class Board {
 
@@ -18,7 +20,9 @@ public class Board {
   double cellWidth;
   double cellHeight;
 
-  public void initialize(int numRows, int numColumns)  {
+  boolean Player = true;
+
+  public void initialize(int numRows, int numColumns) {
     this.numRows = numRows;
     this.numColumns = numColumns;
 
@@ -26,7 +30,7 @@ public class Board {
     addStones();
   }
 
-  private void drawBoard()  {
+  private void drawBoard() {
     //TODO: clean-up
 
     MyLogger.logger.log(Level.INFO, "Drawing a board!");
@@ -83,6 +87,12 @@ public class Board {
 
         stone.setOnMouseClicked(event -> {
           MyLogger.logger.log(Level.INFO, "Stone clicked!");
+          if (Player)
+            stone.setFill(Color.WHITE);
+          else
+            stone.setFill(Color.BLACK);
+
+          Player = !Player;
           stone.setOpacity(1.0);
         });
 
