@@ -14,7 +14,7 @@ import java.util.logging.Level;
 public class ChoiceController {
 
   @FXML
-  CheckBox PvC = new CheckBox;
+  CheckBox PvC = new CheckBox();
 
   @FXML
   private void smallClicked() throws IOException {
