@@ -1,12 +1,15 @@
 package com.example.go;
 
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.shape.Circle;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,7 +17,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
-import javafx.scene.paint.Color;
 
 public class Board {
 
@@ -40,8 +42,7 @@ public class Board {
   }
 
   private void drawBoard() {
-    //TODO: clean-up
-
+    // TODO: clean-up
     MyLogger.logger.log(Level.INFO, "Drawing a board!");
 
     this.cellWidth = gp.getWidth() / size;
@@ -49,8 +50,7 @@ public class Board {
 
     for (int row = 1; row < size - 1; row++) {
       for (int col = 1; col < size - 1; col++) {
-
-        Image image = new Image("C:/Users/krokc/Desktop/tp/s.png");
+        Image image = new Image("C:/Users/Aldona/Documents/GitHub/Go/src/main/resources/com/example/go/s.png");
 
         ImageView imageView = new ImageView(image);
 
@@ -61,7 +61,7 @@ public class Board {
       }
     }
 
-    String path = "C:/Users/krokc/Desktop/tp/"; //change accordingly TODO: make it not dependent on an absolute path
+    String path = "C:/Users/Aldona/Documents/GitHub/Go/src/main/resources/com/example/go/"; // change accordingly TODO: make it not dependent on an absolute path
 
     for (int col = 1; col < size - 1; col++) {
       addImageToCell(gp, path + "g.png", col, 0);
@@ -103,18 +103,15 @@ public class Board {
 
           char rowChar = convertPosition(finalRow);
           char colChar = convertPosition(finalCol);
-          
+
           if (!stone.isPut()) {  // Dodaj warunek sprawdzający, czy kamień już został postawiony
             stone.setOpacity(0.0);
-
-
 
             // Ustaw kolor kamienia
             int color = (Player) ? 1 : 2;
 
             // Wyślij informacje do serwera
             sendMessage("INSERT " + rowChar + colChar + color, socket);
-
             String serverResponse = receiveMessage(socket);
 
             if (serverResponse.equals("INSERT TRUE")) {
@@ -138,6 +135,13 @@ public class Board {
     }
   }
 
+  private void deleteStone(String value) {
+    int row = getRow(value.charAt(0));
+    int col = getCol(value.charAt(1));
+
+
+
+  }
   private void sendMessage(String message, Socket socket) {
     try {
       PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -149,14 +153,34 @@ public class Board {
     }
   }
 
-  // Przekształć indeksy wiersza i kolumny na odpowiednie litery, jeśli są większe niż 9
   private char convertPosition(int position) {
     return (position < 10) ? (char) ('0' + position) : (char) ('A' + position - 10);
   }
+
+  private int getRow(char rowChar) {
+    return (rowChar >= 'A' && rowChar <= 'Z') ? (rowChar - 'A' + 10) : (rowChar - '0');
+  }
+
+  private int getCol(char colChar) {
+    return (colChar >= 'A' && colChar <= 'Z') ? (colChar - 'A' + 10) : (colChar - '0');
+  }
+
   private String receiveMessage(Socket socket) {
     try {
       BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-      return in.readLine(); // Odczytaj odpowiedź od serwera
+      String serverResponse = in.readLine(); // Odczytaj odpowiedź od serwera
+
+      if (serverResponse != null) {
+        if (serverResponse.startsWith("DELETE")) {
+          // Jeżeli serwer wysyła polecenie DELETE, przekazuje współrzędne kamienia do deleteStone
+          deleteStone(serverResponse.substring(6)); // Usunięcie "DELETE " z początku komunikatu
+        }
+
+        return serverResponse;
+      } else {
+        System.out.println("Odebrano null od serwera.");
+        return null;
+      }
     } catch (IOException e) {
       System.out.println("Błąd podczas odbierania wiadomości: " + e.getMessage());
       return null; // Możesz obsłużyć ten błąd w odpowiedni sposób
