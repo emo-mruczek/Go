@@ -87,16 +87,15 @@ public class Board {
 
     for (int row = 0; row < size; row++) {
       for (int col = 0; col < size; col++) {
+        int finalRow = row;
+        int finalCol = col;
 
-        Circle stone = new Circle(cellWidth / 3);
-        stone.setOpacity(0.0);
-
+        Stone stone = new Stone(cellWidth / 3);
         stone.setOnMouseClicked(event -> {
           MyLogger.logger.log(Level.INFO, "Stone clicked!");
 
-          // Przekształć indeksy wiersza i kolumny na odpowiednie litery, jeśli są większe niż 9
-          char rowChar = (row < 10) ? (char) ('0' + row) : (char) ('A' + row - 10);
-          char colChar = (col < 10) ? (char) ('0' + col) : (char) ('A' + col - 10);
+          char rowChar = convertPosition(finalRow);
+          char colChar = convertPosition(finalCol);
 
           // Ustaw kolor kamienia
           int color = (Player) ? 1 : 2;
@@ -104,17 +103,12 @@ public class Board {
           // Wyślij informacje do serwera
           sendMessage("INSERT " + rowChar + colChar + color, socket);
 
-          if (Player)
-            stone.setFill(Color.WHITE);
-          else
-            stone.setFill(Color.BLACK);
+          stone.put(Player, rowChar, colChar);
 
           Player = !Player;
-          stone.setOpacity(1.0);
         });
 
         GridPane.setHalignment(stone, HPos.CENTER);
-
         gp.add(stone, col, row);
       }
     }
@@ -131,5 +125,8 @@ public class Board {
     }
   }
 
-
+  // Przekształć indeksy wiersza i kolumny na odpowiednie litery, jeśli są większe niż 9
+  private char convertPosition(int position) {
+    return (position < 10) ? (char) ('0' + position) : (char) ('A' + position - 10);
+  }
 }
