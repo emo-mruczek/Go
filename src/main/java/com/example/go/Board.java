@@ -2,6 +2,7 @@ package com.example.go;
 
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -13,9 +14,10 @@ import java.util.logging.Level;
 public class Board {
   @FXML
   private GridPane gp = new GridPane();
-
   @FXML
   private Label label = new Label();
+  @FXML
+  private Button button = new Button();
 
   private int size;
   double cellWidth;
@@ -23,6 +25,7 @@ public class Board {
   private Socket socket;
   private Stone[][] stones;
   boolean Player = true;
+  int passes = 0;
 
 
   public void initialize(int size, Socket socket) {
@@ -31,6 +34,21 @@ public class Board {
 
     drawBoard();
     addStones();
+  }
+
+  @FXML
+  private void passClicked() {
+    Player = !Player;
+    passes++;
+    System.out.println(passes);
+
+    if (passes > 1) {
+      endGame();
+    }
+
+    String text = (Player) ? "Current player: Black" : "Current player: White";
+    label.setText(text);
+    MyLogger.logger.log(Level.INFO, "Player passed :(");
   }
 
   private void drawBoard() {
@@ -88,6 +106,8 @@ public class Board {
         stones[row][col] = stone;
         stone.setOnMouseClicked(event -> {
           MyLogger.logger.log(Level.INFO, "Stone clicked!");
+
+          passes = 0;
 
           char rowChar = convertPosition(finalRow);
           char colChar = convertPosition(finalCol);
@@ -156,5 +176,17 @@ public class Board {
     } else {
       throw new IllegalArgumentException("Invalid character: " + character);
     }
+  }
+
+  //TODO: this
+  private void endGame() {
+    label.setText("Game finished!");
+    button.setDisable(true);
+
+    for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
+        stones[row][col].setDisable(true);
+      }
+      }
   }
 }

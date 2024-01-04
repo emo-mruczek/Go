@@ -23,8 +23,6 @@ public class Stone extends Circle {
     setColor(player);
     setOpacity(1.0);
     isPut = true;
-
-    MyLogger.logger.log(Level.INFO, "a");
   }
 
   private void setColor(boolean player) {

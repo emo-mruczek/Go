@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -20,6 +21,11 @@
          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
      </rowConstraints>
    </GridPane>
+   <Button fx:id="button" mnemonicParsing="false" onAction="#passClicked" prefHeight="44.0" prefWidth="83.0" text="Pass">
+      <font>
+         <Font name="System Bold" size="18.0" />
+      </font>
+   </Button>
    <Label fx:id="label" alignment="CENTER" prefHeight="52.0" prefWidth="666.0" textAlignment="CENTER">
       <font>
          <Font name="System Bold" size="22.0" />
