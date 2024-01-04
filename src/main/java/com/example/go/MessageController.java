@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
 
 public class MessageController {
 
@@ -23,11 +24,18 @@ public class MessageController {
   public static String receiveMessage(Socket socket) {
     try {
       BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-      return in.readLine(); // Odczytaj odpowiedź od serwera
+      String serverResponse = in.readLine();
+      MyLogger.logger.log(Level.INFO, serverResponse);
+
+      if (serverResponse != null) {
+        return serverResponse;
+      } else {
+        MyLogger.logger.log(Level.WARNING, "Received NULL!");
+        return null;
+      }
     } catch (IOException e) {
-      System.out.println("Błąd podczas odbierania wiadomości: " + e.getMessage());
-      return null; // Możesz obsłużyć ten błąd w odpowiedni sposób
+      MyLogger.logger.log(Level.WARNING, "Error while receiving a message: " + e.getMessage());
+      return null;
     }
   }
-
 }

@@ -2,11 +2,9 @@ package com.example.go;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-
 import java.util.logging.Level;
 
 public class Stone extends Circle {
-
   private char rowChar;
   private char colChar;
   private boolean player;
@@ -36,6 +34,11 @@ public class Stone extends Circle {
       setFill(Color.WHITE);
   }
 
+  public void remove() {
+    setOpacity(0.0);
+    isPut = false;
+  }
+
   public boolean getPlayer() {
     return player;
   }
@@ -52,8 +55,5 @@ public class Stone extends Circle {
     return isPut;
   }
 
-  public void unPut() {
-    setOpacity(0.0);
-    isPut = false;
-  }
+
 }

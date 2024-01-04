@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -62,5 +61,4 @@ public class ChoiceController {
       throw new RuntimeException(e);
     }
   }
-
 }

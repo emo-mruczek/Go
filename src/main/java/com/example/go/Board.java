@@ -7,17 +7,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.logging.Level;
 
 public class Board {
-
   @FXML
   private GridPane gp = new GridPane();
 
@@ -29,9 +22,6 @@ public class Board {
   double cellHeight;
   private Socket socket;
   private Stone[][] stones;
-
- 
-
   boolean Player = true;
 
 
@@ -50,22 +40,15 @@ public class Board {
     this.cellWidth = gp.getWidth() / size;
     this.cellHeight = gp.getHeight() / size;
 
-stones = new Stone[size][size];
+    stones = new Stone[size][size];
+
+    String path = "C:/Users/krokc/Desktop/tp/"; // change accordingly TODO: make it not dependent on an absolute path
 
     for (int row = 1; row < size - 1; row++) {
       for (int col = 1; col < size - 1; col++) {
-        Image image = new Image("C:/Users/krokc/Desktop/tp/s.png");
-
-        ImageView imageView = new ImageView(image);
-
-        imageView.setFitWidth(cellWidth);
-        imageView.setFitHeight(cellHeight);
-
-        gp.add(imageView, col, row);
+        addImageToCell(gp, path + "s.png", col, row);
       }
     }
-
-    String path = "C:/Users/krokc/Desktop/tp/"; // change accordingly TODO: make it not dependent on an absolute path
 
     for (int col = 1; col < size - 1; col++) {
       addImageToCell(gp, path + "g.png", col, 0);
@@ -94,8 +77,6 @@ stones = new Stone[size][size];
   private void addStones() {
     MyLogger.logger.log(Level.INFO, "Adding stones!");
 
-
-
     for (int row = 0; row < size; row++) {
       for (int col = 0; col < size; col++) {
         label.setText("Current player: Black");
@@ -111,32 +92,24 @@ stones = new Stone[size][size];
           char rowChar = convertPosition(finalRow);
           char colChar = convertPosition(finalCol);
 
-          if (!stone.isPut()) {  // Dodaj warunek sprawdzający, czy kamień już został postawiony
-            stone.setOpacity(0.0);
+          if (!stone.isPut()) {
+            //stone.setOpacity(0.0);   //TODO: why is it here and what is it doing?
 
-            // Ustaw kolor kamienia
-            int color = (Player) ? 1 : 2;
+            int color = (Player) ? 1 : 2;  //TODO: is it ok???
 
-            // Wyślij informacje do serwera
-            sendMessage("INSERT " + rowChar + colChar + color, socket);
-            String serverResponse = receiveMessage(socket);
+            MessageController.sendMessage("INSERT " + rowChar + colChar + color, socket);
+            String command = MessageController.receiveMessage(socket);
 
-            if (serverResponse.equals("INSERT TRUE")) {
-              // Kamień został dodany, podejmij odpowiednie działania
-              stone.put(Player, rowChar, colChar);
-              MyLogger.logger.log(Level.INFO, "KAMIEN POSTAWIONY");
-              Player = !Player;
-              String text = (Player) ? "Current player: White" : "Current player: Black";
-              label.setText(text);
+            String[] part = command.split("\\s+");
+            String name = part[0];
+            String value = part[1];
 
-            } else if (serverResponse.equals("INSERT FALSE")) {
-              // Kamień nie został dodany, poinformuj użytkownika (możesz użyć alertu lub innego komunikatu)
-              MyLogger.logger.log(Level.INFO, "KAMIENIA NIE POSTAWIONO");
-              label.setText("You can't add a stone here!");
-            } else if (serverResponse.startsWith("DELETE")) {
-              // Jeżeli serwer wysyła polecenie DELETE, przekazuje współrzędne kamienia do deleteStone
-              deleteStone(serverResponse.substring(6)); // Usunięcie "DELETE " z początku komunikatu
-              System.out.println("Usuwam" + serverResponse);
+            System.out.println("Command: " + name);
+            System.out.println("Data: " + value);
+
+            switch (name) {
+              case "INSERT" -> insertStone(value, stone, rowChar, colChar);
+              case "DELETE" -> deleteStone(value);
             }
           }
         });
@@ -144,59 +117,44 @@ stones = new Stone[size][size];
         gp.add(stone, col, row);
       }
     }
+  }
 
-    System.out.println(Arrays.deepToString(stones));
+  private void insertStone(String value, Stone stone, char rowChar, char colChar) {
+    switch (value) {
+      case "TRUE" -> {
+        stone.put(Player, rowChar, colChar);
+        MyLogger.logger.log(Level.INFO, "Stone put: " + rowChar + colChar);
+        Player = !Player;
+        String text = (Player) ? "Current player: Black" : "Current player: White";
+        label.setText(text);}
+      case "FALSE" -> {
+        MyLogger.logger.log(Level.INFO, "Stone wasn't put: " + rowChar + colChar);
+        label.setText("You can't add a stone here!");
+      }
+    }
   }
 
   private void deleteStone(String value) {
-    int row = deconvertPosition(value.charAt(1));
-    int col = deconvertPosition(value.charAt(2));
+    int row = reconvertPosition(value.charAt(0));
+    int col = reconvertPosition(value.charAt(1));
 
-    stones[row][col].unPut();
-  }
-  private void sendMessage(String message, Socket socket) {
-    try {
-      PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-      out.println(message);
-    } catch (UnknownHostException e) {
-      System.out.println("Server not found: " + e.getMessage());
-    } catch (IOException e) {
-      System.out.println("I/O error: " + e.getMessage());
-    }
+    stones[row][col].remove();
+
+    label.setText("Last breath!");
+    MyLogger.logger.log(Level.INFO, "Deleting: " + value);
   }
 
   private char convertPosition(int position) {
     return (position < 10) ? (char) ('0' + position) : (char) ('A' + position - 10);
   }
 
-  private int deconvertPosition(char character) {
+  private int reconvertPosition(char character) {
     if (character >= '0' && character <= '9') {
       return character - '0';
     } else if (character >= 'A' && character <= 'Z') {
       return character - 'A' + 10;
     } else {
-      // Handle invalid characters, if needed
       throw new IllegalArgumentException("Invalid character: " + character);
-    }
-  }
-
-
-  private String receiveMessage(Socket socket) {
-    try {
-      BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-      String serverResponse = in.readLine(); // Odczytaj odpowiedź od serwera
-MyLogger.logger.log(Level.INFO, serverResponse);
-
-
-      if (serverResponse != null) {
-        return serverResponse;
-      } else {
-        System.out.println("Odebrano null od serwera.");
-        return null;
-      }
-    } catch (IOException e) {
-      System.out.println("Błąd podczas odbierania wiadomości: " + e.getMessage());
-      return null; // Możesz obsłużyć ten błąd w odpowiedni sposób
     }
   }
 }
