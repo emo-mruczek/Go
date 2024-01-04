@@ -3,6 +3,7 @@ package com.example.go;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,6 +13,8 @@ import java.util.logging.Level;
 
 public class ChoiceController {
 
+  @FXML
+  CheckBox PvC = new CheckBox;
 
   @FXML
   private void smallClicked() throws IOException {
