@@ -90,26 +90,20 @@ public class Board {
         int finalRow = row;
         int finalCol = col;
 
-<<<<<<< HEAD
+
         Stone stone = new Stone(cellWidth / 3);
         stone.setOnMouseClicked(event -> {
           MyLogger.logger.log(Level.INFO, "Stone clicked!");
 
           char rowChar = convertPosition(finalRow);
           char colChar = convertPosition(finalCol);
-=======
-        Circle stone = new Circle(cellWidth / 3);
+
         stone.setOpacity(0.0);
 
         int finalRow = row;
         int finalCol = col;
         stone.setOnMouseClicked(event -> {
           MyLogger.logger.log(Level.INFO, "Stone clicked!");
-
-          // Przekształć indeksy wiersza i kolumny na odpowiednie litery, jeśli są większe niż 9
-          char rowChar = (finalRow < 10) ? (char) ('0' + finalRow) : (char) ('A' + finalRow - 10);
-          char colChar = (finalCol < 10) ? (char) ('0' + finalCol) : (char) ('A' + finalCol - 10);
->>>>>>> 9e07b6787d5e6cbecb0cd6dfd455ca90374ef48f
 
           // Ustaw kolor kamienia
           int color = (Player) ? 1 : 2;
