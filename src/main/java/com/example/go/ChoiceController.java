@@ -5,10 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.stage.Stage;
+
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.logging.Level;
 
 public class ChoiceController {
@@ -17,21 +16,21 @@ public class ChoiceController {
   CheckBox PvC = new CheckBox();
 
   @FXML
-  private void smallClicked() throws IOException {
+  private void smallClicked() {
     MyLogger.logger.log(Level.INFO, "Small clicked!");
 
     initializeBoard(9);
   }
 
   @FXML
-  private void mediumClicked() throws IOException {
+  private void mediumClicked() {
     MyLogger.logger.log(Level.INFO, "Medium clicked!");
 
     initializeBoard(13);
   }
 
   @FXML
-  private void largeClicked() throws IOException {
+  private void largeClicked() {
     MyLogger.logger.log(Level.INFO, "Large clicked");
 
     initializeBoard(19);
@@ -43,14 +42,14 @@ public class ChoiceController {
 
       Socket socket = new Socket("localhost", 4444);
       String message = String.valueOf(size);
-      sendMessage(message, socket);
+      MessageController.sendMessage(message, socket);
 
       FXMLLoader loader = new FXMLLoader(getClass().getResource("board-view.fxml"));
       Scene scene = new Scene(loader.load());
       Stage stage = new Stage();
 
       stage.setOnCloseRequest(event -> {
-        sendMessage("BYE " + "none", socket);
+        MessageController.sendMessage("BYE " + "none", socket);
       });
 
       stage.setTitle("Go");
@@ -63,17 +62,5 @@ public class ChoiceController {
       throw new RuntimeException(e);
     }
   }
-
-  private void sendMessage(String message, Socket socket) {
-    try {
-      PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-      out.println(message);
-    } catch (UnknownHostException e) {
-      System.out.println("Server not found: " + e.getMessage());
-    } catch (IOException e) {
-      System.out.println("I/O error: " + e.getMessage());
-    }
-  }
-
 
 }

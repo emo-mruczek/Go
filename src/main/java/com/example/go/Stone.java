@@ -31,9 +31,9 @@ public class Stone extends Circle {
 
   private void setColor(boolean player) {
     if (player)
-      setFill(Color.WHITE);
-    else
       setFill(Color.BLACK);
+    else
+      setFill(Color.WHITE);
   }
 
   public boolean getPlayer() {
