@@ -38,7 +38,9 @@ public class Board {
 
     for (int row = 1; row < size - 1; row++) {
       for (int col = 1; col < size - 1; col++) {
+
         Image image = new Image("C:/Users/Aldona/Documents/GitHub/Go/src/main/resources/com/example/go/s.png");
+
         ImageView imageView = new ImageView(image);
 
         imageView.setFitWidth(cellWidth);
