@@ -100,28 +100,29 @@ public class Board {
           char rowChar = convertPosition(finalRow);
           char colChar = convertPosition(finalCol);
 
-        stone.setOpacity(0.0);
+          if (!stone.isPut()) {  // Dodaj warunek sprawdzający, czy kamień już został postawiony
+            stone.setOpacity(0.0);
 
-          // Ustaw kolor kamienia
-          int color = (Player) ? 1 : 2;
+            // Ustaw kolor kamienia
+            int color = (Player) ? 1 : 2;
 
-          // Wyślij informacje do serwera
-          sendMessage("INSERT " + rowChar + colChar + color, socket);
+            // Wyślij informacje do serwera
+            sendMessage("INSERT " + rowChar + colChar + color, socket);
 
-          String serverResponse = receiveMessage(socket);
+            String serverResponse = receiveMessage(socket);
 
-          if (serverResponse.equals("INSERT TRUE")) {
-            // Kamień został dodany, podejmij odpowiednie działania
-            stone.put(Player, rowChar, colChar);
-            MyLogger.logger.log(Level.INFO, "KAMIEN POSTAWIONY");
-            Player = !Player;
-          } else if (serverResponse.equals("INSERT FALSE")) {
-            // Kamień nie został dodany, poinformuj użytkownika (możesz użyć alertu lub innego komunikatu)
-            MyLogger.logger.log(Level.INFO, "KAMIENIA NIE POSTAWIONO");
-            System.out.println("Nie można dodać kamienia na to pole.");
+            if (serverResponse.equals("INSERT TRUE")) {
+              // Kamień został dodany, podejmij odpowiednie działania
+              stone.put(Player, rowChar, colChar);
+              MyLogger.logger.log(Level.INFO, "KAMIEN POSTAWIONY");
+              Player = !Player;
+            } else if (serverResponse.equals("INSERT FALSE")) {
+              // Kamień nie został dodany, poinformuj użytkownika (możesz użyć alertu lub innego komunikatu)
+              MyLogger.logger.log(Level.INFO, "KAMIENIA NIE POSTAWIONO");
+              System.out.println("Nie można dodać kamienia na to pole.");
+            }
           }
         });
-
         GridPane.setHalignment(stone, HPos.CENTER);
         gp.add(stone, col, row);
       }
