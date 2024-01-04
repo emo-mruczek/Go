@@ -104,31 +104,33 @@ public class Board {
           char rowChar = convertPosition(finalRow);
           char colChar = convertPosition(finalCol);
 
-          stone.setOpacity(0.0);
 
-          // Ustaw kolor kamienia
-          int color = (Player) ? 1 : 2;
+          if (!stone.isPut()) {  // Dodaj warunek sprawdzający, czy kamień już został postawiony
+            stone.setOpacity(0.0);
 
-          // Wyślij informacje do serwera
-          sendMessage("INSERT " + rowChar + colChar + color, socket);
+            // Ustaw kolor kamienia
+            int color = (Player) ? 1 : 2;
 
-          String serverResponse = receiveMessage(socket);
+            // Wyślij informacje do serwera
+            sendMessage("INSERT " + rowChar + colChar + color, socket);
 
-          if (serverResponse.equals("INSERT TRUE")) {
-            // Kamień został dodany, podejmij odpowiednie działania
-            stone.put(Player, rowChar, colChar);
-            MyLogger.logger.log(Level.INFO, "KAMIEN POSTAWIONY");
-            Player = !Player;
-            String text = (Player) ? "Current player: White" : "Current player: Black";
-            label.setText(text);
+            String serverResponse = receiveMessage(socket);
 
-          } else if (serverResponse.equals("INSERT FALSE")) {
-            // Kamień nie został dodany, poinformuj użytkownika (możesz użyć alertu lub innego komunikatu)
-            MyLogger.logger.log(Level.INFO, "KAMIENIA NIE POSTAWIONO");
-            label.setText("You can't add a stone here!");
+            if (serverResponse.equals("INSERT TRUE")) {
+              // Kamień został dodany, podejmij odpowiednie działania
+              stone.put(Player, rowChar, colChar);
+              MyLogger.logger.log(Level.INFO, "KAMIEN POSTAWIONY");
+              Player = !Player;
+              String text = (Player) ? "Current player: White" : "Current player: Black";
+              label.setText(text);
+
+            } else if (serverResponse.equals("INSERT FALSE")) {
+              // Kamień nie został dodany, poinformuj użytkownika (możesz użyć alertu lub innego komunikatu)
+              MyLogger.logger.log(Level.INFO, "KAMIENIA NIE POSTAWIONO");
+              label.setText("You can't add a stone here!");
+            }
           }
         });
-
         GridPane.setHalignment(stone, HPos.CENTER);
         gp.add(stone, col, row);
       }
