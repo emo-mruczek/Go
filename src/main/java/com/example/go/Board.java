@@ -7,7 +7,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -45,7 +47,7 @@ public class Board {
     for (int row = 1; row < size - 1; row++) {
       for (int col = 1; col < size - 1; col++) {
 
-        Image image = new Image("C:/Users/krokc/Desktop/tp/s.png");
+        Image image = new Image("C:/Users/Aldona/Documents/GitHub/Go/src/main/resources/com/example/go/s.png");
 
         ImageView imageView = new ImageView(image);
 
@@ -56,7 +58,7 @@ public class Board {
       }
     }
 
-    String path = "C:/Users/krokc/Desktop/tp/"; //change accordingly TODO: make it not dependent on an absolute path
+    String path = "C:/Users/Aldona/Documents/GitHub/Go/src/main/resources/com/example/go/"; //change accordingly TODO: make it not dependent on an absolute path
 
     for (int col = 1; col < size - 1; col++) {
       addImageToCell(gp, path + "g.png", col, 0);
@@ -106,9 +108,18 @@ public class Board {
           // Wyślij informacje do serwera
           sendMessage("INSERT " + rowChar + colChar + color, socket);
 
-          stone.put(Player, rowChar, colChar);
+          String serverResponse = receiveMessage(socket);
 
-          Player = !Player;
+          if (serverResponse.equals("INSERT TRUE")) {
+            // Kamień został dodany, podejmij odpowiednie działania
+            stone.put(Player, rowChar, colChar);
+            MyLogger.logger.log(Level.INFO, "KAMIEN POSTAWIONY");
+            Player = !Player;
+          } else if (serverResponse.equals("INSERT FALSE")) {
+            // Kamień nie został dodany, poinformuj użytkownika (możesz użyć alertu lub innego komunikatu)
+            MyLogger.logger.log(Level.INFO, "KAMIENIA NIE POSTAWIONO");
+            System.out.println("Nie można dodać kamienia na to pole.");
+          }
         });
 
         GridPane.setHalignment(stone, HPos.CENTER);
@@ -131,5 +142,14 @@ public class Board {
   // Przekształć indeksy wiersza i kolumny na odpowiednie litery, jeśli są większe niż 9
   private char convertPosition(int position) {
     return (position < 10) ? (char) ('0' + position) : (char) ('A' + position - 10);
+  }
+  private String receiveMessage(Socket socket) {
+    try {
+      BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+      return in.readLine(); // Odczytaj odpowiedź od serwera
+    } catch (IOException e) {
+      System.out.println("Błąd podczas odbierania wiadomości: " + e.getMessage());
+      return null; // Możesz obsłużyć ten błąd w odpowiedni sposób
+    }
   }
 }
