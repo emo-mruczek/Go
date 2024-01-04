@@ -1,10 +1,7 @@
 package com.example.go;
 
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.logging.Level;
 
 public class Board {
@@ -30,8 +28,12 @@ public class Board {
   double cellWidth;
   double cellHeight;
   private Socket socket;
+  private Stone[][] stones;
+
+ 
 
   boolean Player = true;
+
 
   public void initialize(int size, Socket socket) {
     this.size = size;
@@ -48,9 +50,11 @@ public class Board {
     this.cellWidth = gp.getWidth() / size;
     this.cellHeight = gp.getHeight() / size;
 
+stones = new Stone[size][size];
+
     for (int row = 1; row < size - 1; row++) {
       for (int col = 1; col < size - 1; col++) {
-        Image image = new Image("C:/Users/Aldona/Documents/GitHub/Go/src/main/resources/com/example/go/s.png");
+        Image image = new Image("C:/Users/krokc/Desktop/tp/s.png");
 
         ImageView imageView = new ImageView(image);
 
@@ -61,7 +65,7 @@ public class Board {
       }
     }
 
-    String path = "C:/Users/Aldona/Documents/GitHub/Go/src/main/resources/com/example/go/"; // change accordingly TODO: make it not dependent on an absolute path
+    String path = "C:/Users/krokc/Desktop/tp/"; // change accordingly TODO: make it not dependent on an absolute path
 
     for (int col = 1; col < size - 1; col++) {
       addImageToCell(gp, path + "g.png", col, 0);
@@ -90,6 +94,8 @@ public class Board {
   private void addStones() {
     MyLogger.logger.log(Level.INFO, "Adding stones!");
 
+
+
     for (int row = 0; row < size; row++) {
       for (int col = 0; col < size; col++) {
         label.setText("Current player: Black");
@@ -98,6 +104,7 @@ public class Board {
         int finalCol = col;
 
         Stone stone = new Stone(cellWidth / 3);
+        stones[row][col] = stone;
         stone.setOnMouseClicked(event -> {
           MyLogger.logger.log(Level.INFO, "Stone clicked!");
 
@@ -126,6 +133,10 @@ public class Board {
               // Kamień nie został dodany, poinformuj użytkownika (możesz użyć alertu lub innego komunikatu)
               MyLogger.logger.log(Level.INFO, "KAMIENIA NIE POSTAWIONO");
               label.setText("You can't add a stone here!");
+            } else if (serverResponse.startsWith("DELETE")) {
+              // Jeżeli serwer wysyła polecenie DELETE, przekazuje współrzędne kamienia do deleteStone
+              deleteStone(serverResponse.substring(6)); // Usunięcie "DELETE " z początku komunikatu
+              System.out.println("Usuwam" + serverResponse);
             }
           }
         });
@@ -133,14 +144,15 @@ public class Board {
         gp.add(stone, col, row);
       }
     }
+
+    System.out.println(Arrays.deepToString(stones));
   }
 
   private void deleteStone(String value) {
-    int row = getRow(value.charAt(0));
-    int col = getCol(value.charAt(1));
+    int row = deconvertPosition(value.charAt(1));
+    int col = deconvertPosition(value.charAt(2));
 
-
-
+    stones[row][col].unPut();
   }
   private void sendMessage(String message, Socket socket) {
     try {
@@ -157,25 +169,26 @@ public class Board {
     return (position < 10) ? (char) ('0' + position) : (char) ('A' + position - 10);
   }
 
-  private int getRow(char rowChar) {
-    return (rowChar >= 'A' && rowChar <= 'Z') ? (rowChar - 'A' + 10) : (rowChar - '0');
+  private int deconvertPosition(char character) {
+    if (character >= '0' && character <= '9') {
+      return character - '0';
+    } else if (character >= 'A' && character <= 'Z') {
+      return character - 'A' + 10;
+    } else {
+      // Handle invalid characters, if needed
+      throw new IllegalArgumentException("Invalid character: " + character);
+    }
   }
 
-  private int getCol(char colChar) {
-    return (colChar >= 'A' && colChar <= 'Z') ? (colChar - 'A' + 10) : (colChar - '0');
-  }
 
   private String receiveMessage(Socket socket) {
     try {
       BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       String serverResponse = in.readLine(); // Odczytaj odpowiedź od serwera
+MyLogger.logger.log(Level.INFO, serverResponse);
+
 
       if (serverResponse != null) {
-        if (serverResponse.startsWith("DELETE")) {
-          // Jeżeli serwer wysyła polecenie DELETE, przekazuje współrzędne kamienia do deleteStone
-          deleteStone(serverResponse.substring(6)); // Usunięcie "DELETE " z początku komunikatu
-        }
-
         return serverResponse;
       } else {
         System.out.println("Odebrano null od serwera.");

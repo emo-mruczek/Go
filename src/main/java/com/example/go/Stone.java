@@ -51,4 +51,9 @@ public class Stone extends Circle {
   public boolean isPut() {
     return isPut;
   }
+
+  public void unPut() {
+    setOpacity(0.0);
+    isPut = false;
+  }
 }
