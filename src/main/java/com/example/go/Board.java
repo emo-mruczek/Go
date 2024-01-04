@@ -2,11 +2,11 @@ package com.example.go;
 
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,13 +14,16 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
-
 import javafx.scene.paint.Color;
 
 public class Board {
 
   @FXML
   private GridPane gp = new GridPane();
+
+  @FXML
+  private Label label = new Label();
+
   private int size;
   double cellWidth;
   double cellHeight;
@@ -47,7 +50,7 @@ public class Board {
     for (int row = 1; row < size - 1; row++) {
       for (int col = 1; col < size - 1; col++) {
 
-        Image image = new Image("C:/Users/Aldona/Documents/GitHub/Go/src/main/resources/com/example/go/s.png");
+        Image image = new Image("C:/Users/krokc/Desktop/tp/s.png");
 
         ImageView imageView = new ImageView(image);
 
@@ -58,7 +61,7 @@ public class Board {
       }
     }
 
-    String path = "C:/Users/Aldona/Documents/GitHub/Go/src/main/resources/com/example/go/"; //change accordingly TODO: make it not dependent on an absolute path
+    String path = "C:/Users/krokc/Desktop/tp/"; //change accordingly TODO: make it not dependent on an absolute path
 
     for (int col = 1; col < size - 1; col++) {
       addImageToCell(gp, path + "g.png", col, 0);
@@ -89,6 +92,8 @@ public class Board {
 
     for (int row = 0; row < size; row++) {
       for (int col = 0; col < size; col++) {
+        label.setText("Current player: Black");
+
         int finalRow = row;
         int finalCol = col;
 
@@ -98,10 +103,17 @@ public class Board {
 
           char rowChar = convertPosition(finalRow);
           char colChar = convertPosition(finalCol);
+<<<<<<< HEAD
           
           if (!stone.isPut()) {  // Dodaj warunek sprawdzający, czy kamień już został postawiony
             stone.setOpacity(0.0);
           stone.setOpacity(0.0);
+=======
+
+
+          if (!stone.isPut()) {  // Dodaj warunek sprawdzający, czy kamień już został postawiony
+            stone.setOpacity(0.0);
+>>>>>>> 5bc62cb3da031acd4b94bb2456cc0de334fefb6f
 
             // Ustaw kolor kamienia
             int color = (Player) ? 1 : 2;
@@ -116,10 +128,13 @@ public class Board {
               stone.put(Player, rowChar, colChar);
               MyLogger.logger.log(Level.INFO, "KAMIEN POSTAWIONY");
               Player = !Player;
+              String text = (Player) ? "Current player: White" : "Current player: Black";
+              label.setText(text);
+
             } else if (serverResponse.equals("INSERT FALSE")) {
               // Kamień nie został dodany, poinformuj użytkownika (możesz użyć alertu lub innego komunikatu)
               MyLogger.logger.log(Level.INFO, "KAMIENIA NIE POSTAWIONO");
-              System.out.println("Nie można dodać kamienia na to pole.");
+              label.setText("You can't add a stone here!");
             }
           }
         });
