@@ -100,10 +100,6 @@ public class Board {
 
         stone.setOpacity(0.0);
 
-          // Przekształć indeksy wiersza i kolumny na odpowiednie litery, jeśli są większe niż 9
-          char rowChar = (row < 10) ? (char) ('0' + row) : (char) ('A' + row - 10);
-          char colChar = (col < 10) ? (char) ('0' + col) : (char) ('A' + col - 10);
-
           // Ustaw kolor kamienia
           int color = (Player) ? 1 : 2;
 
