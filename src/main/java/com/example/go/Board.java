@@ -38,7 +38,9 @@ public class Board {
 
     for (int row = 1; row < size - 1; row++) {
       for (int col = 1; col < size - 1; col++) {
-        Image image = new Image("C:/Users/krokc/Desktop/tp/s.png");
+
+        Image image = new Image("C:/Users/Aldona/Documents/GitHub/Go/src/main/resources/com/example/go/s.png");
+
         ImageView imageView = new ImageView(image);
 
         imageView.setFitWidth(cellWidth);
@@ -48,7 +50,7 @@ public class Board {
       }
     }
 
-    String path = "C:/Users/krokc/Desktop/tp/"; //change accordingly TODO: make it not dependent on an absolute path
+    String path = "C:/Users/Aldona/Documents/GitHub/Go/src/main/resources/com/example/go/"; //change accordingly TODO: make it not dependent on an absolute path
 
     for (int col = 1; col < size - 1; col++) {
       addImageToCell(gp, path + "g.png", col, 0);
@@ -85,6 +87,17 @@ public class Board {
 
         stone.setOnMouseClicked(event -> {
           MyLogger.logger.log(Level.INFO, "Stone clicked!");
+
+          // Przekształć indeksy wiersza i kolumny na odpowiednie litery, jeśli są większe niż 9
+          char rowChar = (row < 10) ? (char) ('0' + row) : (char) ('A' + row - 10);
+          char colChar = (col < 10) ? (char) ('0' + col) : (char) ('A' + col - 10);
+
+          // Ustaw kolor kamienia
+          int color = (Player) ? 1 : 2;
+
+          // Wyślij informacje do serwera
+          sendMessage("INSERT " + rowChar + colChar + color, socket);
+
           if (Player)
             stone.setFill(Color.WHITE);
           else
@@ -100,4 +113,5 @@ public class Board {
       }
     }
   }
+
 }
