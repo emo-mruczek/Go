@@ -92,7 +92,6 @@ public class Board {
         int finalRow = row;
         int finalCol = col;
 
-
         Stone stone = new Stone(cellWidth / 3);
         stone.setOnMouseClicked(event -> {
           MyLogger.logger.log(Level.INFO, "Stone clicked!");
@@ -100,8 +99,12 @@ public class Board {
           char rowChar = convertPosition(finalRow);
           char colChar = convertPosition(finalCol);
 
+<<<<<<< HEAD
           if (!stone.isPut()) {  // Dodaj warunek sprawdzający, czy kamień już został postawiony
             stone.setOpacity(0.0);
+=======
+          stone.setOpacity(0.0);
+>>>>>>> 60def73cbd89826cf2b553b3a991a1497bf33022
 
             // Ustaw kolor kamienia
             int color = (Player) ? 1 : 2;
