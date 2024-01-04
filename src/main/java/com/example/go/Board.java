@@ -103,17 +103,11 @@ public class Board {
 
           char rowChar = convertPosition(finalRow);
           char colChar = convertPosition(finalCol);
-<<<<<<< HEAD
           
           if (!stone.isPut()) {  // Dodaj warunek sprawdzający, czy kamień już został postawiony
             stone.setOpacity(0.0);
-          stone.setOpacity(0.0);
-=======
 
 
-          if (!stone.isPut()) {  // Dodaj warunek sprawdzający, czy kamień już został postawiony
-            stone.setOpacity(0.0);
->>>>>>> 5bc62cb3da031acd4b94bb2456cc0de334fefb6f
 
             // Ustaw kolor kamienia
             int color = (Player) ? 1 : 2;
