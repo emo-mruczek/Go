@@ -28,12 +28,16 @@ public class Board {
   int passes = 0;
 
 
-  public void initialize(int size, Socket socket) {
+  public void initialize(int size, boolean mode, Socket socket) {
     this.size = size;
     this.socket = socket;
 
     drawBoard();
     addStones();
+
+    if (mode) {
+      initializeComputer();
+    }
   }
 
   @FXML
@@ -188,5 +192,10 @@ public class Board {
         stones[row][col].setDisable(true);
       }
       }
+  }
+
+  //TODO: this
+  private void initializeComputer() {
+    System.out.println("dont be sad :((");
   }
 }
