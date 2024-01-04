@@ -55,7 +55,7 @@ public class ChoiceController {
       stage.show();
 
       Board controller = loader.getController();
-      controller.initialize(size);
+      controller.initialize(size, socket);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

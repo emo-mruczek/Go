@@ -7,6 +7,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.logging.Level;
 
 import javafx.scene.paint.Color;
@@ -18,11 +22,13 @@ public class Board {
   private int size;
   double cellWidth;
   double cellHeight;
+  private Socket socket;
 
   boolean Player = true;
 
-  public void initialize(int size) {
+  public void initialize(int size, Socket socket) {
     this.size = size;
+    this.socket = socket;
 
     drawBoard();
     addStones();
@@ -39,7 +45,7 @@ public class Board {
     for (int row = 1; row < size - 1; row++) {
       for (int col = 1; col < size - 1; col++) {
 
-        Image image = new Image("C:/Users/Aldona/Documents/GitHub/Go/src/main/resources/com/example/go/s.png");
+        Image image = new Image("C:/Users/krokc/Desktop/tp/s.png");
 
         ImageView imageView = new ImageView(image);
 
@@ -50,7 +56,7 @@ public class Board {
       }
     }
 
-    String path = "C:/Users/Aldona/Documents/GitHub/Go/src/main/resources/com/example/go/"; //change accordingly TODO: make it not dependent on an absolute path
+    String path = "C:/Users/krokc/Desktop/tp/"; //change accordingly TODO: make it not dependent on an absolute path
 
     for (int col = 1; col < size - 1; col++) {
       addImageToCell(gp, path + "g.png", col, 0);
@@ -113,5 +119,17 @@ public class Board {
       }
     }
   }
+
+  private void sendMessage(String message, Socket socket) {
+    try {
+      PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+      out.println(message);
+    } catch (UnknownHostException e) {
+      System.out.println("Server not found: " + e.getMessage());
+    } catch (IOException e) {
+      System.out.println("I/O error: " + e.getMessage());
+    }
+  }
+
 
 }
