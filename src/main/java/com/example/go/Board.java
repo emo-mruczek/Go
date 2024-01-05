@@ -2,20 +2,23 @@ package com.example.go;
 
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.logging.Level;
 
 public class Board {
   @FXML
   private GridPane gp = new GridPane();
-
   @FXML
   private Label label = new Label();
+  @FXML
+  private Button button = new Button();
 
   private int size;
   double cellWidth;
@@ -23,14 +26,35 @@ public class Board {
   private Socket socket;
   private Stone[][] stones;
   boolean Player = true;
+  int passes = 0;
+  ArrayList<Move> moves = new ArrayList<Move>();
 
 
-  public void initialize(int size, Socket socket) {
+  public void initialize(int size, boolean mode, Socket socket) {
     this.size = size;
     this.socket = socket;
 
     drawBoard();
     addStones();
+
+    if (mode) {
+      initializeComputer();
+    }
+  }
+
+  @FXML
+  private void passClicked() {
+    Player = !Player;
+    passes++;
+    System.out.println(passes);
+
+    if (passes > 1) {
+      endGame();
+    }
+
+    String text = (Player) ? "Current player: Black" : "Current player: White";
+    label.setText(text);
+    MyLogger.logger.log(Level.INFO, "Player passed :(");
   }
 
   private void drawBoard() {
@@ -89,6 +113,8 @@ public class Board {
         stone.setOnMouseClicked(event -> {
           MyLogger.logger.log(Level.INFO, "Stone clicked!");
 
+          passes = 0;
+
           char rowChar = convertPosition(finalRow);
           char colChar = convertPosition(finalCol);
 
@@ -98,19 +124,9 @@ public class Board {
             int color = (Player) ? 1 : 2;  //TODO: is it ok???
 
             MessageController.sendMessage("INSERT " + rowChar + colChar + color, socket);
-            String command = MessageController.receiveMessage(socket);
 
-            String[] part = command.split("\\s+");
-            String name = part[0];
-            String value = part[1];
+            receiveMessage(stone, rowChar, colChar);
 
-            System.out.println("Command: " + name);
-            System.out.println("Data: " + value);
-
-            switch (name) {
-              case "INSERT" -> insertStone(value, stone, rowChar, colChar);
-              case "DELETE" -> deleteStone(value);
-            }
           }
         });
         GridPane.setHalignment(stone, HPos.CENTER);
@@ -119,9 +135,30 @@ public class Board {
     }
   }
 
+  private void receiveMessage(Stone stone, char rowChar, char colChar) {
+    String command = MessageController.receiveMessage(socket);
+
+    String[] part = command.split("\\s+");
+    String name = part[0];
+    String value = part[1];
+
+    System.out.println("Command: " + name);
+    System.out.println("Data: " + value);
+
+    switch (name) {
+      case "INSERT" -> insertStone(value, stone, rowChar, colChar);
+      case "DELETE" -> {
+        deleteStone(value);
+        receiveMessage(stone, rowChar, colChar);
+      }
+    }
+
+  }
+
   private void insertStone(String value, Stone stone, char rowChar, char colChar) {
     switch (value) {
       case "TRUE" -> {
+        moves.add(new Move(Player, rowChar, colChar));
         stone.put(Player, rowChar, colChar);
         MyLogger.logger.log(Level.INFO, "Stone put: " + rowChar + colChar);
         Player = !Player;
@@ -156,6 +193,27 @@ public class Board {
     } else {
       throw new IllegalArgumentException("Invalid character: " + character);
     }
+  }
+
+
+  //TODO: this
+  private void endGame() {
+    label.setText("Game finished!");
+    button.setDisable(true);
+
+    for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
+        stones[row][col].setDisable(true);
+      }
+      }
+    System.out.println(moves);
+    MessageController.sendMessage("SAVE " + "none", socket);
+  }
+
+  //TODO: this
+  private void initializeComputer() {
+    System.out.println("dont be sad :((");
+
   }
 
 }

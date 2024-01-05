@@ -11,9 +11,10 @@ import java.util.logging.Level;
 
 public class ChoiceController {
 
+  Boolean mode = false;
+
   @FXML
   CheckBox PvC = new CheckBox();
-
   @FXML
   private void smallClicked() {
     MyLogger.logger.log(Level.INFO, "Small clicked!");
@@ -40,6 +41,14 @@ public class ChoiceController {
       MyLogger.logger.log(Level.INFO, "Initializing " + size + "x" + size + " board!");
 
       Socket socket = new Socket("localhost", 4444);
+
+      if (PvC.isSelected()) {
+        mode = true;
+       // MessageController.sendMessage("PVC", socket);
+      } else {
+       // MessageController.sendMessage("PVP", socket);
+      }
+
       String message = String.valueOf(size);
       MessageController.sendMessage(message, socket);
 
@@ -47,16 +56,14 @@ public class ChoiceController {
       Scene scene = new Scene(loader.load());
       Stage stage = new Stage();
 
-      stage.setOnCloseRequest(event -> {
-        MessageController.sendMessage("BYE " + "none", socket);
-      });
+      stage.setOnCloseRequest(event -> MessageController.sendMessage("BYE " + "none", socket));
 
       stage.setTitle("Go");
       stage.setScene(scene);
       stage.show();
 
       Board controller = loader.getController();
-      controller.initialize(size, socket);
+      controller.initialize(size, mode, socket);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
