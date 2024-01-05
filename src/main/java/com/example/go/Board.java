@@ -42,7 +42,7 @@ public class Board {
 
     stones = new Stone[size][size];
 
-    String path = "C:/Users/krokc/Desktop/tp/"; // change accordingly TODO: make it not dependent on an absolute path
+    String path = "C:/Users/Aldona/Documents/GitHub/Go/src/main/resources/com/example/go/"; // change accordingly TODO: make it not dependent on an absolute path
 
     for (int row = 1; row < size - 1; row++) {
       for (int col = 1; col < size - 1; col++) {
@@ -157,4 +157,5 @@ public class Board {
       throw new IllegalArgumentException("Invalid character: " + character);
     }
   }
+
 }
