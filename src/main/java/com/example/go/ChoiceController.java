@@ -44,9 +44,9 @@ public class ChoiceController {
 
       if (PvC.isSelected()) {
         mode = true;
-        MessageController.sendMessage("PVC", socket);
+       // MessageController.sendMessage("PVC", socket);
       } else {
-        MessageController.sendMessage("PVP", socket);
+       // MessageController.sendMessage("PVP", socket);
       }
 
       String message = String.valueOf(size);

@@ -124,25 +124,35 @@ public class Board {
             int color = (Player) ? 1 : 2;  //TODO: is it ok???
 
             MessageController.sendMessage("INSERT " + rowChar + colChar + color, socket);
-            String command = MessageController.receiveMessage(socket);
 
-            String[] part = command.split("\\s+");
-            String name = part[0];
-            String value = part[1];
+            receiveMessage(stone, rowChar, colChar);
 
-            System.out.println("Command: " + name);
-            System.out.println("Data: " + value);
-
-            switch (name) {
-              case "INSERT" -> insertStone(value, stone, rowChar, colChar);
-              case "DELETE" -> deleteStone(value);
-            }
           }
         });
         GridPane.setHalignment(stone, HPos.CENTER);
         gp.add(stone, col, row);
       }
     }
+  }
+
+  private void receiveMessage(Stone stone, char rowChar, char colChar) {
+    String command = MessageController.receiveMessage(socket);
+
+    String[] part = command.split("\\s+");
+    String name = part[0];
+    String value = part[1];
+
+    System.out.println("Command: " + name);
+    System.out.println("Data: " + value);
+
+    switch (name) {
+      case "INSERT" -> insertStone(value, stone, rowChar, colChar);
+      case "DELETE" -> {
+        deleteStone(value);
+        receiveMessage(stone, rowChar, colChar);
+      }
+    }
+
   }
 
   private void insertStone(String value, Stone stone, char rowChar, char colChar) {
