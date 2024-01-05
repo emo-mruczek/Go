@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.logging.Level;
 
 public class Board {
@@ -26,6 +27,7 @@ public class Board {
   private Stone[][] stones;
   boolean Player = true;
   int passes = 0;
+  ArrayList<Move> moves = new ArrayList<Move>();
 
 
   public void initialize(int size, boolean mode, Socket socket) {
@@ -146,6 +148,7 @@ public class Board {
   private void insertStone(String value, Stone stone, char rowChar, char colChar) {
     switch (value) {
       case "TRUE" -> {
+        moves.add(new Move(Player, rowChar, colChar));
         stone.put(Player, rowChar, colChar);
         MyLogger.logger.log(Level.INFO, "Stone put: " + rowChar + colChar);
         Player = !Player;
@@ -192,10 +195,13 @@ public class Board {
         stones[row][col].setDisable(true);
       }
       }
+    System.out.println(moves);
+    MessageController.sendMessage("SAVE " + "none", socket);
   }
 
   //TODO: this
   private void initializeComputer() {
     System.out.println("dont be sad :((");
+
   }
 }
