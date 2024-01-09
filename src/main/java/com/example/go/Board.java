@@ -4,8 +4,6 @@ import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
 import java.net.Socket;
@@ -21,8 +19,7 @@ public class Board {
   private Button button = new Button();
 
   private int size;
-  double cellWidth;
-  double cellHeight;
+  double cellSize;
   private Socket socket;
   private Stone[][] stones;
   boolean Player = true;
@@ -61,42 +58,13 @@ public class Board {
     // TODO: clean-up
     MyLogger.logger.log(Level.INFO, "Drawing a board!");
 
-    this.cellWidth = gp.getWidth() / size;
-    this.cellHeight = gp.getHeight() / size;
-
+    cellSize = gp.getWidth() / size;
     stones = new Stone[size][size];
 
-    String path = "C:/Users/krokc/Desktop/tp/"; // change accordingly TODO: make it not dependent on an absolute path
+    BoardDrawer.insertImages(gp, size);
 
-    for (int row = 1; row < size - 1; row++) {
-      for (int col = 1; col < size - 1; col++) {
-        addImageToCell(gp, path + "s.png", col, row);
-      }
-    }
-
-    for (int col = 1; col < size - 1; col++) {
-      addImageToCell(gp, path + "g.png", col, 0);
-      addImageToCell(gp, path + "d.png", col, size - 1);
-    }
-
-    for (int row = 1; row < size - 1; row++) {
-      addImageToCell(gp, path + "l.png", 0, row);
-      addImageToCell(gp, path + "p.png", size - 1, row);
-    }
-
-    addImageToCell(gp, path + "gl.png", 0, 0);
-    addImageToCell(gp, path + "gp.png", size - 1, 0);
-    addImageToCell(gp, path + "dl.png", 0, size - 1);
-    addImageToCell(gp, path + "dp.png", size - 1, size - 1);
   }
 
-  private void addImageToCell(GridPane gp, String imagePath, int col, int row) {
-    Image image = new Image(imagePath);
-    ImageView imageView = new ImageView(image);
-    imageView.setFitWidth(cellWidth);
-    imageView.setFitHeight(cellHeight);
-    gp.add(imageView, col, row);
-  }
 
   private void addStones() {
     MyLogger.logger.log(Level.INFO, "Adding stones!");
@@ -108,7 +76,7 @@ public class Board {
         int finalRow = row;
         int finalCol = col;
 
-        Stone stone = new Stone(cellWidth / 3);
+        Stone stone = new Stone(cellSize / 3);
         stones[row][col] = stone;
         stone.setOnMouseClicked(event -> {
           MyLogger.logger.log(Level.INFO, "Stone clicked!");
