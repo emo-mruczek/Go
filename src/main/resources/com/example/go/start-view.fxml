@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.CheckBox?>
@@ -14,12 +15,15 @@
             <Font name="Bauhaus 93" size="96.0" />
          </font>
       </Label>
-      <ButtonBar layoutX="176.0" layoutY="269.0" prefHeight="40.0" prefWidth="206.0">
+      <ButtonBar layoutX="165.0" layoutY="265.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="241.0">
          <buttons>
-            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#smallClicked" text="9x9" />
-            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#mediumClicked" text="13x13" textAlignment="CENTER" />
             <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#largeClicked" text="19x19" />
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#smallClicked" prefHeight="26.0" prefWidth="98.0" text="9x9" />
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#mediumClicked" text="13x13" textAlignment="CENTER" />
          </buttons>
+         <cursor>
+            <Cursor fx:constant="DEFAULT" />
+         </cursor>
       </ButtonBar>
       <CheckBox fx:id="PvC" alignment="CENTER" contentDisplay="CENTER" layoutX="299.0" layoutY="214.0" mnemonicParsing="false" prefHeight="15.0" prefWidth="8.0" textAlignment="CENTER">
          <font>
@@ -31,5 +35,6 @@
             <Font size="18.0" />
          </font>
       </Label>
+      <Button layoutX="260.0" layoutY="342.0" mnemonicParsing="false" onAction="#recapClicked" text="Previous games" />
    </children>
 </AnchorPane>

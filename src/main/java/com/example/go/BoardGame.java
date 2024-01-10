@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-public class Board {
+public class BoardGame {
   @FXML
   private GridPane gp = new GridPane();
   @FXML
