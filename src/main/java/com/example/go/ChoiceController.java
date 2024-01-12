@@ -95,7 +95,7 @@ public class ChoiceController {
       stage.show();
 
       ListController controller = loader.getController();
-     // controller.initialize();
+     controller.initialize(socket);
 
     } catch (IOException e)  {
       throw new RuntimeException(e);
