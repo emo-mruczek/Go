@@ -1,10 +1,10 @@
 package com.example.go;
 
 public class Game {
-  private int id;
-  private String timestamp;
-  private int size;
-  private String player;
+  private final int id;
+  private final String timestamp;
+  private final int size;
+  private final String player;
   private String[] moves;
 
   public Game(int id, String timestamp, int size, String player) {
@@ -12,6 +12,22 @@ public class Game {
     this.timestamp = timestamp;
     this.size = size;
     this.player = player;
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public String getTimestamp() {
+    return timestamp;
+  }
+
+  public int getSize() {
+    return size;
+  }
+
+  public String getPlayer() {
+    return player;
   }
 
   @Override

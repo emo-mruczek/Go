@@ -3,10 +3,15 @@ package com.example.go;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.cell.TextFieldListCell;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.Socket;
+import java.util.logging.Level;
 
 public class ListController {
 
@@ -31,11 +36,29 @@ public class ListController {
       if (event.getClickCount() == 2) {
         Game selectedGame = list.getSelectionModel().getSelectedItem();
         if (selectedGame != null) {
-          BoardRecap br = new BoardRecap(selectedGame);
+          newRecap(selectedGame);
         }
       }
     });
   }
 
+  private void newRecap(Game game) {
+    try {
+      MyLogger.logger.log(Level.INFO, "Initializing recap");
 
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("recap-view.fxml"));
+      Scene scene = new Scene(loader.load());
+      Stage stage = new Stage();
+
+      stage.setTitle("Recap");
+      stage.setScene(scene);
+      stage.show();
+
+      BoardRecap controller = loader.getController();
+      controller.initialize(game);
+
+    } catch (IOException e)  {
+      throw new RuntimeException(e);
+    }
+  }
 }

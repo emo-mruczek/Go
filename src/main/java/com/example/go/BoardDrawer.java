@@ -4,12 +4,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
-public class BoardDrawer {
+import java.util.logging.Level;
 
+public class BoardDrawer {
   private static double cellWidth;
   private static double cellHeight;
   private static String path = "C:/Users/krokc/Desktop/tp/"; // change accordingly TODO: make it not dependent on an absolute path
   public static void insertImages(GridPane gp, int size) {
+
+    MyLogger.logger.log(Level.INFO, "Inserting images.");
 
    cellWidth = gp.getWidth() / size;
    cellHeight = gp.getHeight() / size;
