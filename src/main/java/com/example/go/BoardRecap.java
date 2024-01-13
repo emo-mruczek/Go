@@ -1,20 +1,85 @@
 package com.example.go;
 
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
 import javafx.scene.layout.GridPane;
+
+import java.util.ArrayList;
+import java.util.logging.Level;
 
 public class BoardRecap {
 
   @FXML
   private GridPane gp = new GridPane();
 
+  ArrayList<Move> moves = new ArrayList<>();
+  private int currID = 0;
+  private Stone[][] stones;
   private Game game;
 
-  public void initialize(Game game) {
+@FXML
+  private void nextClicked() {
+    String moveType = moves.get(currID).getType();
+
+    switch(moveType) {
+      case "INSERTION" -> insertStone();
+      case "DELETION" -> deleteStone();
+    }
+  }
+
+private void insertStone() {
+  char row = moves.get(currID).getRow();
+  char col = moves.get(currID).getCol();
+  boolean player = moves.get(currID).getPlayer();
+  System.out.println("Player: " + player);
+
+  MyLogger.logger.log(Level.INFO, "Putting stone: " + row + " " + col);
+  stones[reconvertPosition(row)][reconvertPosition(col)].put(player, row, col);
+  currID++;
+}
+
+private void deleteStone() {
+
+}
+
+  public void initialize(Game game, String stringWithMoves) {
     this.game = game;
 
     int size = 9;
     BoardDrawer.insertImages(gp, size);
-    System.out.println(size);
+
+    String[] listOfMoves = stringWithMoves.split(";");
+
+    for (String move : listOfMoves) {
+      String[] moveData = move.split(",");
+      Move m = new Move(Integer.parseInt(moveData[0]), moveData[1], moveData[2], moveData[3], moveData[4], moveData[5]);
+      moves.add(m);
+    }
+    System.out.println(currID);
+
+    stones = new Stone[size][size];
+
+    double cellSize = gp.getWidth() / size;
+    for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
+        Stone stone = new Stone(cellSize / 3);
+        stones[row][col] = stone;
+
+        GridPane.setHalignment(stone, HPos.CENTER);
+        gp.add(stone, col, row);
+      }
+    }
   }
+
+  private int reconvertPosition(char character) {
+    if (character >= '0' && character <= '9') {
+      return character - '0';
+    } else if (character >= 'A' && character <= 'Z') {
+      return character - 'A' + 10;
+    } else {
+      throw new IllegalArgumentException("Invalid character: " + character);
+    }
+  }
+
+
 }

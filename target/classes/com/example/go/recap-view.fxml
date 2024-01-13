@@ -31,7 +31,7 @@
                      <Font name="System Bold" size="20.0" />
                   </font>
                </Button>
-               <Button mnemonicParsing="false" prefHeight="52.0" prefWidth="318.0" text="Next" textAlignment="CENTER">
+               <Button mnemonicParsing="false" onAction="#nextClicked" prefHeight="52.0" prefWidth="318.0" text="Next" textAlignment="CENTER">
                   <font>
                      <Font name="System Bold" size="20.0" />
                   </font>

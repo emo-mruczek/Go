@@ -62,7 +62,6 @@ public class BoardGame {
     stones = new Stone[size][size];
 
     BoardDrawer.insertImages(gp, size);
-
   }
 
 
