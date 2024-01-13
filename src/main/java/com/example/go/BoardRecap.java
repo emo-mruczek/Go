@@ -23,6 +23,9 @@ public class BoardRecap {
 
 @FXML
   private void nextClicked() {
+      if (currID >= numberOfMoves) {
+        return;
+      }
       String moveType = moves.get(currID).getType();
       switch(moveType) {
         case "INSERTION" -> insertStone();
@@ -32,6 +35,7 @@ public class BoardRecap {
       if (currID == numberOfMoves - 1) {
         label.setText("This is the final move!");
         MyLogger.logger.log(Level.INFO, "There is no more moves.");
+        currID++;
       } else {
         label.setText("");
         currID++;
@@ -40,18 +44,17 @@ public class BoardRecap {
 
   @FXML
   private void previousClicked() {
-    String moveType = moves.get(currID).getType();
-    switch(moveType) {
-      case "INSERTION" -> insertStone();
-      case "DELETION" -> deleteStone();
-    }
-
-    if (currID == numberOfMoves - 1) {
-      label.setText("This is the first move!");
+    if (currID == 0) {
+      label.setText("This was the first move!");
       MyLogger.logger.log(Level.INFO, "There is no previous moves.");
     } else {
       label.setText("");
       currID--;
+    }
+    String moveType = moves.get(currID).getType();
+    switch(moveType) {
+      case "INSERTION" -> deleteStone();
+      case "DELETION" -> insertStone();
     }
   }
 
@@ -59,14 +62,17 @@ private void insertStone() {
   char row = moves.get(currID).getRow();
   char col = moves.get(currID).getCol();
   boolean player = moves.get(currID).getPlayer();
-  System.out.println("Player: " + player);
 
   MyLogger.logger.log(Level.INFO, "Putting stone: " + row + " " + col);
   stones[reconvertPosition(row)][reconvertPosition(col)].put(player, row, col);
 }
 
 private void deleteStone() {
+  char row = moves.get(currID).getRow();
+  char col = moves.get(currID).getCol();
 
+  MyLogger.logger.log(Level.INFO, "Deleting stone: " + row + " " + col);
+  stones[reconvertPosition(row)][reconvertPosition(col)].remove();
 }
 
   public void initialize(Game game, String stringWithMoves) {
@@ -96,8 +102,6 @@ private void deleteStone() {
         gp.add(stone, col, row);
       }
     }
-
-
   }
 
   private int reconvertPosition(char character) {
