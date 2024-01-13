@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -23,10 +24,10 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <AnchorPane prefHeight="75.0" prefWidth="390.0">
-         <ButtonBar prefHeight="90.0" prefWidth="390.0">
+      <AnchorPane prefHeight="90.0" prefWidth="668.0">
+         <ButtonBar layoutX="334.0" layoutY="15.0" prefHeight="60.0" prefWidth="334.0">
             <buttons>
-               <Button mnemonicParsing="false" prefHeight="52.0" prefWidth="318.0" text="Previous" textAlignment="CENTER">
+               <Button mnemonicParsing="false" onAction="#previousClicked" prefHeight="52.0" prefWidth="318.0" text="Previous" textAlignment="CENTER">
                   <font>
                      <Font name="System Bold" size="20.0" />
                   </font>
@@ -38,6 +39,11 @@
                </Button>
             </buttons>
          </ButtonBar>
+         <Label fx:id="label" alignment="CENTER" layoutX="14.0" layoutY="15.0" prefHeight="60.0" prefWidth="214.0" textAlignment="CENTER">
+            <font>
+               <Font size="20.0" />
+            </font>
+         </Label>
       </AnchorPane>
    </children>
 </VBox>

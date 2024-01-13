@@ -24,21 +24,10 @@ public Move(int ID, String timestamp, String playerString, String row, String co
   this.col = col.charAt(0);
   this.type = type;
 
-  System.out.println("Move player: " + playerString);
-
   switch (playerString) {
     case "WHITE" -> player = false;
     case "BLACK" -> player = true;
   }
-
- // if (playerString == "WHITE") {
- //   this.player = false;
- // } else {
-  //  this.player = true;
- // }
-
-  System.out.println("Move bool player: " + player);
-
 }
 
   public char getCol() {
