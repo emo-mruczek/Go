@@ -5,6 +5,7 @@ import javafx.geometry.HPos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
+import java.nio.file.FileSystemNotFoundException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
@@ -27,11 +28,25 @@ public class BoardRecap {
         return;
       }
       String moveType = moves.get(currID).getType();
+      System.out.println(currID);
       switch(moveType) {
-        case "INSERTION" -> insertStone();
-        case "DELETION" -> deleteStone();
-      }
+        case "INSERTION" -> insertStone(currID);
+        case "DELETION" -> {
+          ArrayList<Integer> storeID = new ArrayList<>();
+          int tempID = currID;
+          while (moves.get(tempID).getType().compareTo("DELETION") == 0) {
+             storeID.add(tempID);
+            tempID++;
+          }
+          insertStone(tempID);
 
+          for (int ID : storeID) {
+            deleteStone(ID);
+          }
+
+          currID = tempID;
+          }
+      }
       if (currID == numberOfMoves - 1) {
         label.setText("This is the final move!");
         MyLogger.logger.log(Level.INFO, "There is no more moves.");
@@ -45,7 +60,7 @@ public class BoardRecap {
   @FXML
   private void previousClicked() {
     if (currID == 0) {
-      label.setText("This was the first move!");
+      label.setText("That was the first move!");
       MyLogger.logger.log(Level.INFO, "There is no previous moves.");
     } else {
       label.setText("");
@@ -53,23 +68,57 @@ public class BoardRecap {
     }
     String moveType = moves.get(currID).getType();
     switch(moveType) {
-      case "INSERTION" -> deleteStone();
-      case "DELETION" -> insertStone();
+      case "INSERTION" -> {
+
+        System.out.println(currID);
+
+        if (currID == 0) {
+          deleteStone(currID);
+          return;
+        }
+
+        if (moves.get(currID - 1).getType().compareTo("DELETION") == 0) {
+          ArrayList<Integer> storeID = new ArrayList<>();
+          int tempID = currID - 1;
+          while (moves.get(tempID).getType().compareTo("DELETION") == 0) {
+            System.out.println("Jestem tutaj!");
+            storeID.add(tempID);
+            System.out.println(tempID);
+            tempID--;
+          }
+          deleteStone(currID);
+
+          System.out.println(storeID);
+
+          for (int ID : storeID) {
+            insertStone(ID);
+          }
+
+          currID = tempID + 1;
+          return;
+        }
+
+        deleteStone(currID);
+      }
+      case "DELETION" -> {
+        System.out.println("Czy ja tutaj wchodze w ogole?");
+        insertStone(currID);
+      }
     }
   }
 
-private void insertStone() {
-  char row = moves.get(currID).getRow();
-  char col = moves.get(currID).getCol();
-  boolean player = moves.get(currID).getPlayer();
+private void insertStone(int ID) {
+  char row = moves.get(ID).getRow();
+  char col = moves.get(ID).getCol();
+  boolean player = moves.get(ID).getPlayer();
 
   MyLogger.logger.log(Level.INFO, "Putting stone: " + row + " " + col);
   stones[reconvertPosition(row)][reconvertPosition(col)].put(player, row, col);
 }
 
-private void deleteStone() {
-  char row = moves.get(currID).getRow();
-  char col = moves.get(currID).getCol();
+private void deleteStone(int ID) {
+  char row = moves.get(ID).getRow();
+  char col = moves.get(ID).getCol();
 
   MyLogger.logger.log(Level.INFO, "Deleting stone: " + row + " " + col);
   stones[reconvertPosition(row)][reconvertPosition(col)].remove();
