@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.go.ListController">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="208.0" layoutY="33.0" text="Previous games" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="25.0" />
+         </font>
+      </Label>
+      <ListView fx:id="list" layoutX="29.0" layoutY="100.0" prefHeight="281.0" prefWidth="547.0" />
+   </children>
+</AnchorPane>
