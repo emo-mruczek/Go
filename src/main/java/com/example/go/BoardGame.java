@@ -24,10 +24,12 @@ public class BoardGame {
   private Stone[][] stones;
   boolean Player = true;
   int passes = 0;
+  boolean isGameStillGoing = true;
+  boolean playerClicked = false;
   ArrayList<Move> moves = new ArrayList<Move>();
 
 
-  public void initialize(int size, boolean mode, Socket socket) {
+  public void initialize(int size, boolean mode, Socket socket) throws InterruptedException {
     this.size = size;
     this.socket = socket;
 
@@ -86,9 +88,8 @@ public class BoardGame {
           char colChar = convertPosition(finalCol);
 
           if (!stone.isPut()) {
-            //stone.setOpacity(0.0);   //TODO: why is it here and what is it doing?
 
-            int color = (Player) ? 1 : 2;  //TODO: is it ok???
+            int color = (Player) ? 1 : 2;
 
             MessageController.sendMessage("INSERT " + rowChar + colChar + color, socket);
 
@@ -130,7 +131,9 @@ public class BoardGame {
         MyLogger.logger.log(Level.INFO, "Stone put: " + rowChar + colChar);
         Player = !Player;
         String text = (Player) ? "Current player: Black" : "Current player: White";
-        label.setText(text);}
+        label.setText(text);
+        playerClicked = true;
+      }
       case "FALSE" -> {
         MyLogger.logger.log(Level.INFO, "Stone wasn't put: " + rowChar + colChar);
         label.setText("You can't add a stone here!");
@@ -178,9 +181,18 @@ public class BoardGame {
   }
 
   //TODO: this
-  private void initializeComputer() {
-    System.out.println("dont be sad :((");
+  private void initializeComputer() throws InterruptedException {
+    MyLogger.logger.log(Level.INFO, "PvC mode is initializing.");
 
+    label.setText("You are black!");
+
+    while (isGameStillGoing) {
+      if (playerClicked) {
+        Player = !Player;
+        playerClicked = false;
+      } else {
+        wait();
+      }
+    }
   }
-
 }
