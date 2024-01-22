@@ -6,15 +6,17 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class MessageController {
 
   public static void sendMessage(String message, Socket socket) {
     try {
+      TimeUnit.MILLISECONDS.sleep(10);
       PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
       out.println(message);
-    } catch (UnknownHostException e) {
+    } catch (UnknownHostException | InterruptedException e) {
       System.out.println("Server not found: " + e.getMessage());
     } catch (IOException e) {
       System.out.println("I/O error: " + e.getMessage());
