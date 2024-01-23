@@ -25,7 +25,7 @@ public class ChoiceController {
 
     if (Objects.equals(response, "SECOND")) {
       String size = MessageController.receiveMessage(socket);
-      makeBoard(Integer.parseInt(size));
+      makeBoard(Integer.parseInt(size), false);
     }
 
   }
@@ -68,19 +68,21 @@ public class ChoiceController {
       MessageController.sendMessage(message, socket);
 
 
-      makeBoard(size);
+      makeBoard(size, true);
   }
 
-  private void makeBoard(int size) throws IOException, InterruptedException {
+  private void makeBoard(int size, boolean player) throws IOException, InterruptedException {
 
-    MessageController.sendMessage(String.valueOf(size), socket);
+    if(player) {
+      MessageController.sendMessage(String.valueOf(size), socket);
+    }
 
     if (PvC.isSelected()) {
       mode = true;
-      MessageController.sendMessage("PVC", socket);
+    //  MessageController.sendMessage("PVC", socket);
       System.out.println("Jestem pvc");
     } else {
-      MessageController.sendMessage("PVP", socket);
+     // MessageController.sendMessage("PVP", socket);
       System.out.println("Jestem pvp");
     }
 
@@ -94,7 +96,7 @@ public class ChoiceController {
     stage.show();
 
     BoardGame controller = loader.getController();
-    controller.initialize(size, mode, socket);
+    controller.initialize(size, mode, socket, player);
   }
 
   private void initializeRecap() throws IOException {

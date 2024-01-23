@@ -6,11 +6,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-public class BoardGame {
+public class BoardGame  {
   @FXML
   private GridPane gp = new GridPane();
   @FXML
@@ -22,19 +23,29 @@ public class BoardGame {
   double cellSize;
   private Socket socket;
   private Stone[][] stones;
-  boolean Player = true;
+  boolean Player;
   int passes = 0;
   boolean isGameStillGoing = true;
   boolean playerClicked = false;
   ArrayList<Move> moves = new ArrayList<Move>();
 
 
-  public void initialize(int size, boolean mode, Socket socket) throws InterruptedException {
+  public void initialize(int size, boolean mode, Socket socket, boolean player) throws InterruptedException {
+
     this.size = size;
     this.socket = socket;
-
+    this.Player = player;
     drawBoard();
     addStones();
+
+    if (Player) {
+      label.setText("Waiting for player 2 to join");
+      MessageController.receiveMessage(socket);
+      label.setText("Player 2 has joined. You can start now");
+    }
+    else {
+      label.setText("Waiting for player 1 to move");
+    }
 
     if (mode) {
       initializeComputer();
@@ -114,13 +125,23 @@ public class BoardGame {
     System.out.println("Data: " + value);
 
     switch (name) {
-      case "INSERT" -> insertStone(value, stone, rowChar, colChar);
+      case "INSERT" -> {
+        insertStone(value, stone, rowChar, colChar);
+        receiveMessage(stone, rowChar, colChar);
+      }
       case "DELETE" -> {
         deleteStone(value);
         receiveMessage(stone, rowChar, colChar);
       }
+      case "OPPONENT" -> insertOpponentStone(value, !Player);
     }
 
+  }
+
+  private void insertOpponentStone(String data, boolean Player) {
+    String[] part = data.split(",");
+    //stone.put(Player, rowChar, colChar);
+    System.out.println(part[0] + " " + part[1]);
   }
 
   private void insertStone(String value, Stone stone, char rowChar, char colChar) {
@@ -129,7 +150,7 @@ public class BoardGame {
         moves.add(new Move(Player, rowChar, colChar));
         stone.put(Player, rowChar, colChar);
         MyLogger.logger.log(Level.INFO, "Stone put: " + rowChar + colChar);
-        Player = !Player;
+        // Player = !Player;
         String text = (Player) ? "Current player: Black" : "Current player: White";
         label.setText(text);
         playerClicked = true;
@@ -175,7 +196,7 @@ public class BoardGame {
       for (int col = 0; col < size; col++) {
         stones[row][col].setDisable(true);
       }
-      }
+    }
     System.out.println(moves);
     MessageController.sendMessage("SAVE " + "none", socket);
   }
