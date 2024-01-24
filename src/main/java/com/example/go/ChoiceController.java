@@ -39,8 +39,8 @@ public class ChoiceController {
     this.socket = socket;
   }
 
- public static void initializeBoard(int size, String player) {
-   // try {
+ public void initializeBoard(int size, String player) {
+    try {
       MyLogger.logger.log(Level.INFO, "Initializing " + size + "x" + size + " board!");
 
       if (Objects.equals(player, "FIRST")) {
@@ -51,20 +51,20 @@ public class ChoiceController {
 
       System.out.println("Hi! I'm here and i am " + player);
 
-    //  FXMLLoader loader = new FXMLLoader(getClass().getResource("board-view.fxml"));
-    //  Scene scene = new Scene(loader.load());
-    //  Stage stage = new Stage();
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("online-board-view.fxml"));
+      Scene scene = new Scene(loader.load());
+      Stage stage = new Stage();
 
-     // stage.setOnCloseRequest(event -> MessageController.sendMessage("BYE " + "none", socket));
+      stage.setOnCloseRequest(event -> MessageController.sendMessage("BYE " + "none", socket));
 
-     // stage.setTitle("Go");
-     // stage.setScene(scene);
-      //stage.show();
+      stage.setTitle("Go");
+      stage.setScene(scene);
+      stage.show();
 
-      //BoardGame controller = loader.getController();
-      //controller.initialize(size, mode, socket);
-   // } catch (IOException e) {
-    //  throw new RuntimeException(e);
-    //}
+      OnlineBoardGame controller = loader.getController();
+      controller.initialize(size, socket, player);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

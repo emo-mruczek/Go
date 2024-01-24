@@ -114,7 +114,8 @@ public class MainScreenFacade {
       MyLogger.logger.log(Level.INFO, "I'm SECOND!");
 
       String size = MessageController.receiveMessage(socket);
-      ChoiceController.initializeBoard(Integer.parseInt(size), "SECOND");
+      ChoiceController ch = new ChoiceController();
+      ch.initializeBoard(Integer.parseInt(size), "SECOND");
     }
   }
 
