@@ -29,11 +29,13 @@ public class OnlineBoardGame implements Runnable{
   private boolean continueToPlay = true;
   private boolean waiting = true;
   private boolean PlayerButBool;
+  private char rowSelected;
+  private char colSelected;
 
   Socket socket;
   String Player;
 
-  public void initialize(int size, Socket socket, String Player) {
+  public void initialize(int size, Socket socket, String Player ) {
     this.socket = socket;
     this.Player = Player;
     this.size = size;
@@ -61,26 +63,59 @@ public class OnlineBoardGame implements Runnable{
       Platform.runLater(() -> label.setText("Opponent has joined! You can move now"));
       myTurn = true;
     } else {
-      Platform.runLater(() -> label.setText("Waiting for the first player to move")); ;
+      Platform.runLater(() -> label.setText("Waiting for the first player to move"));
     }
 
     while (continueToPlay) {
       if (PlayerButBool) {
+        MyLogger.logger.log(Level.INFO, "I'm waiting for an action!");
         waitForPlayerAction();
-        //sendMove();
-      //  recieveInfoFromServer();
+        MyLogger.logger.log(Level.INFO, "I'm sending a move");
+        sendMove();
+        MyLogger.logger.log(Level.INFO, "I'm waiting for a message!");
+        receiveMessage();
       }
       else {
-       // recieveInfoFromServer();
+        MyLogger.logger.log(Level.INFO, "I'm waiting for a message!");
+        receiveMessage();
+        MyLogger.logger.log(Level.INFO, "I'm waiting for an action!");
         waitForPlayerAction();
-       // sendMove();
+        MyLogger.logger.log(Level.INFO, "I'm sending a move");
+        sendMove();
       }
 
     }
+    } catch (IOException ex) {
+      System.err.println(ex);
     } catch (InterruptedException ex) {}
 
   }
 
+  private void receiveMessage() {
+    String command = MessageController.receiveMessage(socket);
+
+    String[] part = command.split("\\s+");
+    String name = part[0];
+    String value = part[1];
+
+    System.out.println("Command: " + name);
+    System.out.println("Data: " + value);
+
+    int row = getRow(value.charAt(0));
+    int col = getCol(value.charAt(1));
+    int color = getColor(value.charAt(2));
+
+    stones[row][col].put(!PlayerButBool, value.charAt(0), (value.charAt(1)));
+
+    Platform.runLater(() -> label.setText("Your turn!"));
+    myTurn = true;
+
+  }
+
+  private void sendMove() throws IOException {
+    int color = (PlayerButBool) ? 1 : 2;
+    MessageController.sendMessage("INSERT " + rowSelected + colSelected + color, socket);
+  }
   private void waitForPlayerAction() throws InterruptedException {
     while (waiting) {
       Thread.sleep(100);
@@ -119,10 +154,15 @@ public class OnlineBoardGame implements Runnable{
           char rowChar = convertPosition(finalRow);
           char colChar = convertPosition(finalCol);
 
-          if (!stone.isPut()) {
+          if (!stone.isPut() && myTurn) {
             stone.put(PlayerButBool, rowChar, colChar);
-
-           //int color = (Player) ? 1 : 2;  //TODO: is it ok???
+            myTurn = false;
+            rowSelected = rowChar;
+            colSelected = colChar;
+            Platform.runLater(() -> label.setText("Waiting for the other player to move"));
+            waiting = false;
+            myTurn = false;
+            //int color = (Player) ? 1 : 2;  //TODO: is it ok???
 
           //  MessageController.sendMessage("INSERT " + rowChar + colChar + color, socket);
 
@@ -138,6 +178,26 @@ public class OnlineBoardGame implements Runnable{
 
   private char convertPosition(int position) {
     return (position < 10) ? (char) ('0' + position) : (char) ('A' + position - 10);
+  }
+
+  private int getRow(char rowChar) {
+    if (rowChar >= '0' && rowChar <= '9') {
+      return rowChar - '0';
+    } else {
+      return rowChar - 'A' + 10;
+    }
+  }
+
+  private int getCol(char colChar) {
+    if (colChar >= '0' && colChar <= '9') {
+      return colChar - '0';
+    } else {
+      return colChar - 'A' + 10;
+    }
+  }
+
+  private int getColor(char colorChar) {
+    return Character.getNumericValue(colorChar);
   }
 
   @FXML

@@ -115,6 +115,7 @@ public class MainScreenFacade {
 
       String size = MessageController.receiveMessage(socket);
       ChoiceController ch = new ChoiceController();
+      ch.initialize(socket);
       ch.initializeBoard(Integer.parseInt(size), "SECOND");
     }
   }
