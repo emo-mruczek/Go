@@ -74,14 +74,10 @@ public class OnlineBoardGame implements Runnable{
         sendMove();
         MyLogger.logger.log(Level.INFO, "I'm waiting for a message!");
         receiveMessage();
-        Platform.runLater(() -> label.setText("Your turn!"));
-        myTurn = true;
       }
       else {
         MyLogger.logger.log(Level.INFO, "I'm waiting for a message!");
         receiveMessage();
-        Platform.runLater(() -> label.setText("Your turn!"));
-        myTurn = true;
         MyLogger.logger.log(Level.INFO, "I'm waiting for an action!");
         waitForPlayerAction();
         MyLogger.logger.log(Level.INFO, "I'm sending a move");
@@ -95,7 +91,7 @@ public class OnlineBoardGame implements Runnable{
 
   }
 
-  private void receiveMessage() throws IOException, InterruptedException {
+  private void receiveMessage() {
     String command = MessageController.receiveMessage(socket);
 
     String[] part = command.split("\\s+");
@@ -105,51 +101,20 @@ public class OnlineBoardGame implements Runnable{
     System.out.println("Command: " + name);
     System.out.println("Data: " + value);
 
-    switch (name) {
-      case "INSERT" -> insertStone(value);
-    //  case "DELETE" -> {
-    //    deleteStone(value);
-     //   receiveMessage(stone, rowChar, colChar);
-     // }
-    }
+    int row = getRow(value.charAt(0));
+    int col = getCol(value.charAt(1));
+    int color = getColor(value.charAt(2));
+
+    stones[row][col].put(!PlayerButBool, value.charAt(0), (value.charAt(1)));
+
+    Platform.runLater(() -> label.setText("Your turn!"));
+    myTurn = true;
 
   }
 
-  private void insertStone(String value) throws IOException, InterruptedException {
-
-
-    switch (value) {
-      case "TRUE" -> {
-
-        String where = MessageController.receiveMessage(socket);
-
-        int row = getRow(where.charAt(0));
-        int col = getCol(where.charAt(1));
-        int color = getColor(where.charAt(2));
-
-       // moves.add(new Move(Player, rowChar, colChar));
-       // stone.put(Player, rowChar, colChar);
-        stones[row][col].put(!PlayerButBool, where.charAt(0), where.charAt(1));
-
-        MyLogger.logger.log(Level.INFO, "Stone put: " + row + col);
-        }
-      case "FALSE" -> {
-        MyLogger.logger.log(Level.INFO, "Stone wasn't put!");
-        Platform.runLater(() ->label.setText("You can't add a stone here!"));
-        waiting = true;
-        myTurn = true;
-        waitForPlayerAction();
-        sendMove();
-      }
-    }
-  }
-
-
-
-  private void sendMove() throws IOException, InterruptedException {
+  private void sendMove() throws IOException {
     int color = (PlayerButBool) ? 1 : 2;
     MessageController.sendMessage("INSERT " + rowSelected + colSelected + color, socket);
-    receiveMessage();
   }
   private void waitForPlayerAction() throws InterruptedException {
     while (waiting) {
