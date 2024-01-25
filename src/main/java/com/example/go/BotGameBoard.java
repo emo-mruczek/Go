@@ -7,10 +7,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.logging.Level;
 
-public class BoardGame {
+public class BotGameBoard {
+
   @FXML
   private GridPane gp = new GridPane();
   @FXML
@@ -18,37 +18,20 @@ public class BoardGame {
   @FXML
   private Button button = new Button();
 
-  private int size;
-  double cellSize;
   private Socket socket;
+  private int size;
   private Stone[][] stones;
+  double cellSize;
+  int color = 1;
   boolean Player = true;
-  int passes = 0;
-  ArrayList<Move> moves = new ArrayList<Move>();
 
 
-  public void initialize(int size, boolean mode, Socket socket) {
+  public void initialize(int size,  Socket socket) {
     this.size = size;
     this.socket = socket;
 
     drawBoard();
     addStones();
-
-  }
-
-  @FXML
-  private void passClicked() {
-    Player = !Player;
-    passes++;
-    System.out.println(passes);
-
-    if (passes > 1) {
-      endGame();
-    }
-
-    String text = (Player) ? "Current player: Black" : "Current player: White";
-    label.setText(text);
-    MyLogger.logger.log(Level.INFO, "Player passed :(");
   }
 
   private void drawBoard() {
@@ -60,7 +43,6 @@ public class BoardGame {
 
     BoardDrawer.insertImages(gp, size);
   }
-
 
   private void addStones() {
     MyLogger.logger.log(Level.INFO, "Adding stones!");
@@ -77,15 +59,15 @@ public class BoardGame {
         stone.setOnMouseClicked(event -> {
           MyLogger.logger.log(Level.INFO, "Stone clicked!");
 
-          passes = 0;
+         // passes = 0;
 
           char rowChar = convertPosition(finalRow);
           char colChar = convertPosition(finalCol);
 
-          if (!stone.isPut()) {
-            //stone.setOpacity(0.0);   //TODO: why is it here and what is it doing?
+         if (!stone.isPut()) {
 
-            int color = (Player) ? 1 : 2;  //TODO: is it ok???
+
+            //stone.setOpacity(0.0);   //TODO: why is it here and what is it doing?
 
             MessageController.sendMessage("INSERT " + rowChar + colChar + color, socket);
 
@@ -110,40 +92,16 @@ public class BoardGame {
     System.out.println("Data: " + value);
 
     switch (name) {
-      case "INSERT" -> insertStone(value, stone, rowChar, colChar);
-      case "DELETE" -> {
-        deleteStone(value);
-        receiveMessage(stone, rowChar, colChar);
-      }
+      case "INSERT" -> stones[reconvertPosition(rowChar)][reconvertPosition(colChar)].put(Player, rowChar, colChar);
+      //insertStone(value, stone, rowChar, colChar);
+     // case "DELETE" -> {
+     //   deleteStone(value);
+     //   receiveMessage(stone, rowChar, colChar);
+     // }
     }
 
   }
 
-  private void insertStone(String value, Stone stone, char rowChar, char colChar) {
-    switch (value) {
-      case "TRUE" -> {
-        moves.add(new Move(Player, rowChar, colChar));
-        stone.put(Player, rowChar, colChar);
-        MyLogger.logger.log(Level.INFO, "Stone put: " + rowChar + colChar);
-        Player = !Player;
-        String text = (Player) ? "Current player: Black" : "Current player: White";
-        label.setText(text);}
-      case "FALSE" -> {
-        MyLogger.logger.log(Level.INFO, "Stone wasn't put: " + rowChar + colChar);
-        label.setText("You can't add a stone here!");
-      }
-    }
-  }
-
-  private void deleteStone(String value) {
-    int row = reconvertPosition(value.charAt(0));
-    int col = reconvertPosition(value.charAt(1));
-
-    stones[row][col].remove();
-
-    label.setText("Last breath!");
-    MyLogger.logger.log(Level.INFO, "Deleting: " + value);
-  }
 
   private char convertPosition(int position) {
     return (position < 10) ? (char) ('0' + position) : (char) ('A' + position - 10);
@@ -160,24 +118,11 @@ public class BoardGame {
   }
 
 
-  //TODO: this
-  private void endGame() {
-    label.setText("Game finished!");
-    button.setDisable(true);
+  @FXML
+  private void passClicked() {
 
-    for (int row = 0; row < size; row++) {
-      for (int col = 0; col < size; col++) {
-        stones[row][col].setDisable(true);
-      }
-      }
-    System.out.println(moves);
-    MessageController.sendMessage("SAVE " + "none", socket);
+    MyLogger.logger.log(Level.INFO, "Player passed :(");
   }
 
-  //TODO: this
-  private void initializeComputer() {
-    System.out.println("dont be sad :((");
-
-  }
 
 }

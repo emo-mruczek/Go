@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.util.Objects;
 import java.util.logging.Level;
 
-public class ChoiceController {
+public class BotChoiceController {
 
   private static Socket socket;
 
@@ -18,40 +18,34 @@ public class ChoiceController {
   private void smallClicked() {
     MyLogger.logger.log(Level.INFO, "Small clicked!");
 
-    initializeBoard(9, "FIRST");
+    initializeBoard(9);
   }
 
   @FXML
   private void mediumClicked() {
     MyLogger.logger.log(Level.INFO, "Medium clicked!");
 
-    initializeBoard(13, "FIRST");
+    initializeBoard(13);
   }
 
   @FXML
   private void largeClicked() {
     MyLogger.logger.log(Level.INFO, "Large clicked");
 
-    initializeBoard(19, "FIRST");
+    initializeBoard(19);
   }
 
   public void initialize(Socket socket) {
     this.socket = socket;
   }
 
- public void initializeBoard(int size, String player) {
+  public void initializeBoard(int size) {
     try {
       MyLogger.logger.log(Level.INFO, "Initializing " + size + "x" + size + " board!");
+      String message = String.valueOf(size);
+      MessageController.sendMessage(message, socket);
 
-      if (Objects.equals(player, "FIRST")) {
-        String message = String.valueOf(size);
-        MessageController.sendMessage(message, socket);
-        System.out.println("TEST");
-      }
-
-      System.out.println("Hi! I'm here and i am " + player);
-
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("online-board-view.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("bot-board-view.fxml"));
       Scene scene = new Scene(loader.load());
       Stage stage = new Stage();
 
@@ -61,10 +55,11 @@ public class ChoiceController {
       stage.setScene(scene);
       stage.show();
 
-      OnlineBoardGame controller = loader.getController();
-      controller.initialize(size, socket, player);
+      BotGameBoard controller = loader.getController();
+      controller.initialize(size, socket);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
+
 }

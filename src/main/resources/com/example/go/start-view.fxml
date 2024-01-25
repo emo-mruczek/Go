@@ -3,7 +3,6 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -15,29 +14,29 @@
             <Font name="Bauhaus 93" size="96.0" />
          </font>
       </Label>
-      <ButtonBar layoutX="166.0" layoutY="278.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="241.0">
+      <ButtonBar layoutX="166.0" layoutY="215.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="241.0">
          <buttons>
             <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#smallClicked" prefHeight="26.0" prefWidth="98.0" text="9x9" />
-            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#mediumClicked" text="13x13" textAlignment="CENTER" />
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#mediumClicked" prefHeight="5.0" text="13x13" textAlignment="CENTER" />
             <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#largeClicked" text="19x19" />
          </buttons>
          <cursor>
             <Cursor fx:constant="DEFAULT" />
          </cursor>
       </ButtonBar>
-      <CheckBox fx:id="PvC" alignment="CENTER" contentDisplay="CENTER" layoutX="299.0" layoutY="214.0" mnemonicParsing="false" prefHeight="15.0" prefWidth="8.0" textAlignment="CENTER">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </CheckBox>
-      <Label layoutX="231.0" layoutY="187.0" prefHeight="27.0" prefWidth="175.0" text="Nie mam znajomych:">
+      <Label layoutX="252.0" layoutY="172.0" text="Quick hotseat">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Button layoutX="202.0" layoutY="342.0" mnemonicParsing="false" onAction="#recapClicked" text="Previous games" />
-      <Button layoutX="324.0" layoutY="342.0" mnemonicParsing="false" onAction="#onlineClicked" text="Online game" />
-      <Label layoutX="252.0" layoutY="251.0" text="Quick hotseat:">
+      <ButtonBar layoutX="122.0" layoutY="318.0" prefHeight="40.0" prefWidth="355.0">
+         <buttons>
+            <Button mnemonicParsing="false" onAction="#recapClicked" text="Previous games" />
+            <Button mnemonicParsing="false" onAction="#onlineClicked" text="Online game" />
+            <Button mnemonicParsing="false" onAction="#botClicked" text="No friends? :((" />
+         </buttons>
+      </ButtonBar>
+      <Label layoutX="254.0" layoutY="281.0" text="Game modes">
          <font>
             <Font size="18.0" />
          </font>
