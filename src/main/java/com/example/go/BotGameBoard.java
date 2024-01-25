@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.logging.Level;
 
 public class BotGameBoard {
@@ -24,6 +25,7 @@ public class BotGameBoard {
   double cellSize;
   int color = 1;
   boolean Player = true;
+  ArrayList<Move> moves = new ArrayList<Move>();
 
 
   public void initialize(int size,  Socket socket) {
@@ -49,7 +51,7 @@ public class BotGameBoard {
 
     for (int row = 0; row < size; row++) {
       for (int col = 0; col < size; col++) {
-        label.setText("Current player: Black");
+        label.setText("You are playing as Black!");
 
         int finalRow = row;
         int finalCol = col;
@@ -92,14 +94,41 @@ public class BotGameBoard {
     System.out.println("Data: " + value);
 
     switch (name) {
-      case "INSERT" -> stones[reconvertPosition(rowChar)][reconvertPosition(colChar)].put(Player, rowChar, colChar);
-      //insertStone(value, stone, rowChar, colChar);
+      case "INSERT" -> {
+        insertStone(value, stone, rowChar, colChar);
+        botMove();
+      }
+
      // case "DELETE" -> {
      //   deleteStone(value);
      //   receiveMessage(stone, rowChar, colChar);
      // }
     }
 
+  }
+
+  private void botMove() {
+    String botMove = MessageController.receiveMessage(socket);
+
+    int row = reconvertPosition(botMove.charAt(0));
+    int col = reconvertPosition(botMove.charAt(1));
+
+    MyLogger.logger.log(Level.INFO,"Bot's move: " + botMove.charAt(0) + " " + botMove.charAt(1));
+    stones[row][col].put(false, botMove.charAt(0), botMove.charAt(1));
+  }
+
+
+  private void insertStone(String value, Stone stone, char rowChar, char colChar) {
+    switch (value) {
+      case "TRUE" -> {
+        moves.add(new Move(Player, rowChar, colChar));
+        stone.put(Player, rowChar, colChar);
+        MyLogger.logger.log(Level.INFO, "Stone put: " + rowChar + colChar);}
+      case "FALSE" -> {
+        MyLogger.logger.log(Level.INFO, "Stone wasn't put: " + rowChar + colChar);
+        label.setText("You can't add a stone here!");
+      }
+    }
   }
 
 

@@ -116,7 +116,6 @@ public class BoardGame {
         receiveMessage(stone, rowChar, colChar);
       }
     }
-
   }
 
   private void insertStone(String value, Stone stone, char rowChar, char colChar) {
