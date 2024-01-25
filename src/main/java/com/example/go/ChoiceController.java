@@ -3,63 +3,55 @@ package com.example.go;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class ChoiceController {
 
-  Boolean mode = false;
+  private static Socket socket;
 
-  @FXML
-  private void recapClicked() throws IOException {
-  MyLogger.logger.log(Level.INFO, "Recap clicked!");
-
-  initializeRecap();
-  }
-
-  @FXML
-  CheckBox PvC = new CheckBox();
   @FXML
   private void smallClicked() {
     MyLogger.logger.log(Level.INFO, "Small clicked!");
 
-    initializeBoard(9);
+    initializeBoard(9, "FIRST");
   }
 
   @FXML
   private void mediumClicked() {
     MyLogger.logger.log(Level.INFO, "Medium clicked!");
 
-    initializeBoard(13);
+    initializeBoard(13, "FIRST");
   }
 
   @FXML
   private void largeClicked() {
     MyLogger.logger.log(Level.INFO, "Large clicked");
 
-    initializeBoard(19);
+    initializeBoard(19, "FIRST");
   }
 
-  private void initializeBoard(int size) {
+  public void initialize(Socket socket) {
+    this.socket = socket;
+  }
+
+ public void initializeBoard(int size, String player) {
     try {
       MyLogger.logger.log(Level.INFO, "Initializing " + size + "x" + size + " board!");
 
-      Socket socket = new Socket("localhost", 4444);
-
-      if (PvC.isSelected()) {
-        mode = true;
-       // MessageController.sendMessage("PVC", socket);
-      } else {
-       // MessageController.sendMessage("PVP", socket);
+      if (Objects.equals(player, "FIRST")) {
+        String message = String.valueOf(size);
+        MessageController.sendMessage(message, socket);
+        System.out.println("TEST");
       }
 
-      String message = String.valueOf(size);
-      MessageController.sendMessage(message, socket);
+      System.out.println("Hi! I'm here and i am " + player);
 
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("board-view.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("online-board-view.fxml"));
       Scene scene = new Scene(loader.load());
       Stage stage = new Stage();
 
@@ -69,35 +61,9 @@ public class ChoiceController {
       stage.setScene(scene);
       stage.show();
 
-      BoardGame controller = loader.getController();
-      controller.initialize(size, mode, socket);
+      OnlineBoardGame controller = loader.getController();
+      controller.initialize(size, socket, player);
     } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private void initializeRecap() throws IOException {
-    try {
-    MyLogger.logger.log(Level.INFO, "Initializing list of previous games");
-
-    Socket socket = new Socket("localhost", 4444);
-    String message = "RECAP";
-    MessageController.sendMessage(message, socket);
-
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("game-list-view.fxml"));
-      Scene scene = new Scene(loader.load());
-      Stage stage = new Stage();
-
-      stage.setOnCloseRequest(event -> MessageController.sendMessage("BYE " + "none", socket));
-
-      stage.setTitle("List of games");
-      stage.setScene(scene);
-      stage.show();
-
-      ListController controller = loader.getController();
-     controller.initialize(socket);
-
-    } catch (IOException e)  {
       throw new RuntimeException(e);
     }
   }
