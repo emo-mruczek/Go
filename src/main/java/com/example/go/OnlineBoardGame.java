@@ -118,12 +118,22 @@ public class OnlineBoardGame implements Runnable{
 
     switch (name) {
       case "INSERT" -> insertStone(value);
-    //  case "DELETE" -> {
-     //   deleteStone(value);
-     //   receiveMessage(stone, rowChar, colChar);
-     // }
+      case "DELETE" -> {
+        deleteStone(value);
+        String another = MessageController.receiveMessage(socket);
+        whatAnswer(another);
+      }
     }
 
+  }
+
+  private void deleteStone(String value) {
+    int row = reconvertPosition(value.charAt(0));
+    int col = reconvertPosition(value.charAt(1));
+
+    stones[row][col].remove();
+
+    MyLogger.logger.log(Level.INFO, "Deleting: " + value);
   }
 
   private void insertStone(String value) throws InterruptedException, IOException {
@@ -240,6 +250,16 @@ public class OnlineBoardGame implements Runnable{
       return colChar - '0';
     } else {
       return colChar - 'A' + 10;
+    }
+  }
+
+  private int reconvertPosition(char character) {
+    if (character >= '0' && character <= '9') {
+      return character - '0';
+    } else if (character >= 'A' && character <= 'Z') {
+      return character - 'A' + 10;
+    } else {
+      throw new IllegalArgumentException("Invalid character: " + character);
     }
   }
 
