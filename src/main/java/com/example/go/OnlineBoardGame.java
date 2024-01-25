@@ -92,30 +92,70 @@ public class OnlineBoardGame implements Runnable{
   }
 
   private void receiveMessage() {
-    String command = MessageController.receiveMessage(socket);
+    String answer= MessageController.receiveMessage(socket);
 
-    String[] part = command.split("\\s+");
+    whatAnswer(answer);
+
+    Platform.runLater(() -> label.setText("Your turn!"));
+    myTurn = true;
+  }
+
+  private void sendMove() throws IOException {
+    int color = (PlayerButBool) ? 1 : 2;
+    MessageController.sendMessage(rowSelected + String.valueOf(colSelected) + color, socket);
+    String answer = MessageController.receiveMessage(socket);
+    whatAnswer(answer);
+  }
+
+  private void whatAnswer(String answer) {
+
+    String[] part = answer.split("\\s+");
     String name = part[0];
     String value = part[1];
 
     System.out.println("Command: " + name);
     System.out.println("Data: " + value);
 
-    int row = getRow(value.charAt(0));
-    int col = getCol(value.charAt(1));
-    int color = getColor(value.charAt(2));
-
-    stones[row][col].put(!PlayerButBool, value.charAt(0), (value.charAt(1)));
-
-    Platform.runLater(() -> label.setText("Your turn!"));
-    myTurn = true;
+    switch (name) {
+      case "INSERT" -> insertStone(value);
+    //  case "DELETE" -> {
+     //   deleteStone(value);
+     //   receiveMessage(stone, rowChar, colChar);
+     // }
+    }
 
   }
 
-  private void sendMove() throws IOException {
-    int color = (PlayerButBool) ? 1 : 2;
-    MessageController.sendMessage("INSERT " + rowSelected + colSelected + color, socket);
+  private void insertStone(String value) {
+    String where = MessageController.receiveMessage(socket);
+
+    int row = getRow(where.charAt(0));
+    int col = getCol(where.charAt(1));
+    int color = getColor(where.charAt(2));
+
+    boolean currPlayer;
+
+    if (color == 1) {
+      currPlayer = true;
+    } else {
+      currPlayer = false;
+    }
+
+    switch (value) {
+      case "TRUE" -> {
+      // moves.add(new Move(currPlayer, where.charAt(0), where.charAt(1)));
+        stones[row][col].put(currPlayer, where.charAt(0), where.charAt(1));
+        MyLogger.logger.log(Level.INFO, "Stone put: " + where.charAt(0) + where.charAt(1));
+        }
+      case "FALSE" -> {
+       // MyLogger.logger.log(Level.INFO, "Stone wasn't put: " + where.charAt(0) + where.charAt(1));
+       // Platform.runLater(() -> label.setText("You can't add a stone here!"));
+      }
+    }
   }
+
+
+
   private void waitForPlayerAction() throws InterruptedException {
     while (waiting) {
       Thread.sleep(100);
@@ -155,8 +195,6 @@ public class OnlineBoardGame implements Runnable{
           char colChar = convertPosition(finalCol);
 
           if (!stone.isPut() && myTurn) {
-            stone.put(PlayerButBool, rowChar, colChar);
-            myTurn = false;
             rowSelected = rowChar;
             colSelected = colChar;
             Platform.runLater(() -> label.setText("Waiting for the other player to move"));
