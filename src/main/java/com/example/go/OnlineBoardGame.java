@@ -91,7 +91,7 @@ public class OnlineBoardGame implements Runnable{
 
   }
 
-  private void receiveMessage() {
+  private void receiveMessage() throws IOException, InterruptedException {
     String answer= MessageController.receiveMessage(socket);
 
     whatAnswer(answer);
@@ -100,15 +100,15 @@ public class OnlineBoardGame implements Runnable{
     myTurn = true;
   }
 
-  private void sendMove() throws IOException {
+  private void sendMove() throws IOException, InterruptedException {
     int color = (PlayerButBool) ? 1 : 2;
     MessageController.sendMessage(rowSelected + String.valueOf(colSelected) + color, socket);
     String answer = MessageController.receiveMessage(socket);
     whatAnswer(answer);
   }
 
-  private void whatAnswer(String answer) {
-
+  private void whatAnswer(String answer) throws IOException, InterruptedException {
+    System.out.println("DUPA!!");
     String[] part = answer.split("\\s+");
     String name = part[0];
     String value = part[1];
@@ -126,30 +126,39 @@ public class OnlineBoardGame implements Runnable{
 
   }
 
-  private void insertStone(String value) {
-    String where = MessageController.receiveMessage(socket);
-
-    int row = getRow(where.charAt(0));
-    int col = getCol(where.charAt(1));
-    int color = getColor(where.charAt(2));
-
-    boolean currPlayer;
-
-    if (color == 1) {
-      currPlayer = true;
-    } else {
-      currPlayer = false;
-    }
+  private void insertStone(String value) throws InterruptedException, IOException {
+    System.out.println("DUPA!");
 
     switch (value) {
       case "TRUE" -> {
+        String where = MessageController.receiveMessage(socket);
+
+        int row = getRow(where.charAt(0));
+        int col = getCol(where.charAt(1));
+        int color = getColor(where.charAt(2));
+
+        boolean currPlayer;
+
+        if (color == 1) {
+          currPlayer = true;
+        } else {
+          currPlayer = false;
+        }
+
       // moves.add(new Move(currPlayer, where.charAt(0), where.charAt(1)));
+
         stones[row][col].put(currPlayer, where.charAt(0), where.charAt(1));
         MyLogger.logger.log(Level.INFO, "Stone put: " + where.charAt(0) + where.charAt(1));
         }
       case "FALSE" -> {
-       // MyLogger.logger.log(Level.INFO, "Stone wasn't put: " + where.charAt(0) + where.charAt(1));
-       // Platform.runLater(() -> label.setText("You can't add a stone here!"));
+        System.out.println("DUPA");
+        MyLogger.logger.log(Level.INFO, "Stone wasn't put: " + value);
+        Platform.runLater(() -> label.setText("You can't add a stone here!"));
+
+        waiting = true;
+        myTurn = true;
+        waitForPlayerAction();
+        sendMove();
       }
     }
   }
