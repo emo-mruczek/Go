@@ -30,6 +30,13 @@ public class MainScreenFacade {
   }
 
   @FXML
+  private void botClicked() {
+    MyLogger.logger.log(Level.INFO, "Bot clicked!");
+
+    initializeBot();
+  }
+
+  @FXML
   CheckBox PvC = new CheckBox();
 
   @FXML
@@ -97,7 +104,7 @@ public class MainScreenFacade {
     if (Objects.equals(whichPlayer, "FIRST")) {
       MyLogger.logger.log(Level.INFO, "I'm FIRST!");
 
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("choice-view.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("online-choice-view.fxml"));
       Scene scene = new Scene(loader.load());
       Stage stage = new Stage();
 
@@ -107,14 +114,14 @@ public class MainScreenFacade {
       stage.setScene(scene);
       stage.show();
 
-      ChoiceController controller = loader.getController();
+      OnlineChoiceController controller = loader.getController();
       controller.initialize(socket);
 
     } else {
       MyLogger.logger.log(Level.INFO, "I'm SECOND!");
 
       String size = MessageController.receiveMessage(socket);
-      ChoiceController ch = new ChoiceController();
+      OnlineChoiceController ch = new OnlineChoiceController();
       ch.initialize(socket);
       ch.initializeBoard(Integer.parseInt(size), "SECOND");
     }
@@ -145,4 +152,31 @@ public class MainScreenFacade {
       throw new RuntimeException(e);
     }
   }
+
+  private void initializeBot() {
+    try {
+      MyLogger.logger.log(Level.INFO, "Beware! Initializing game with a computer!");
+
+      Socket socket = new Socket("localhost", 4444);
+      String message = "BOT";
+      MessageController.sendMessage(message, socket);
+
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("bot-choice-view.fxml"));
+      Scene scene = new Scene(loader.load());
+      Stage stage = new Stage();
+
+      stage.setOnCloseRequest(event -> MessageController.sendMessage("BYE " + "none", socket));
+
+      stage.setTitle("Choose mode");
+      stage.setScene(scene);
+      stage.show();
+
+      BotChoiceController controller = loader.getController();
+      controller.initialize(socket);
+
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 }

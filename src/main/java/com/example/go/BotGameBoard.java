@@ -8,9 +8,11 @@ import javafx.scene.layout.GridPane;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.logging.Level;
 
-public class BoardGame {
+public class BotGameBoard {
+
   @FXML
   private GridPane gp = new GridPane();
   @FXML
@@ -18,37 +20,21 @@ public class BoardGame {
   @FXML
   private Button button = new Button();
 
-  private int size;
-  double cellSize;
   private Socket socket;
+  private int size;
   private Stone[][] stones;
+  double cellSize;
+  int color = 1;
   boolean Player = true;
-  int passes = 0;
   ArrayList<Move> moves = new ArrayList<Move>();
 
 
-  public void initialize(int size, boolean mode, Socket socket) {
+  public void initialize(int size, Socket socket) {
     this.size = size;
     this.socket = socket;
 
     drawBoard();
     addStones();
-
-  }
-
-  @FXML
-  private void passClicked() {
-    Player = !Player;
-    passes++;
-    System.out.println(passes);
-
-    if (passes > 1) {
-      endGame();
-    }
-
-    String text = (Player) ? "Current player: Black" : "Current player: White";
-    label.setText(text);
-    MyLogger.logger.log(Level.INFO, "Player passed :(");
   }
 
   private void drawBoard() {
@@ -61,13 +47,12 @@ public class BoardGame {
     BoardDrawer.insertImages(gp, size);
   }
 
-
   private void addStones() {
     MyLogger.logger.log(Level.INFO, "Adding stones!");
 
     for (int row = 0; row < size; row++) {
       for (int col = 0; col < size; col++) {
-        label.setText("Current player: Black");
+        label.setText("You are playing as Black!");
 
         int finalRow = row;
         int finalCol = col;
@@ -77,15 +62,15 @@ public class BoardGame {
         stone.setOnMouseClicked(event -> {
           MyLogger.logger.log(Level.INFO, "Stone clicked!");
 
-          passes = 0;
+          // passes = 0;
 
           char rowChar = convertPosition(finalRow);
           char colChar = convertPosition(finalCol);
 
           if (!stone.isPut()) {
-            //stone.setOpacity(0.0);   //TODO: why is it here and what is it doing?
 
-            int color = (Player) ? 1 : 2;  //TODO: is it ok???
+
+            //stone.setOpacity(0.0);   //TODO: why is it here and what is it doing?
 
             MessageController.sendMessage("INSERT " + rowChar + colChar + color, socket);
 
@@ -110,13 +95,55 @@ public class BoardGame {
     System.out.println("Data: " + value);
 
     switch (name) {
-      case "INSERT" -> insertStone(value, stone, rowChar, colChar);
+      case "INSERT" -> {
+        insertStone(value, stone, rowChar, colChar);
+        botMove();
+      }
       case "DELETE" -> {
         deleteStone(value);
         receiveMessage(stone, rowChar, colChar);
       }
     }
+
   }
+
+  private void botMove() {
+    String botMoveStatus = MessageController.receiveMessage(socket);
+
+    String[] part = botMoveStatus.split("\\s+");
+    String name = part[0];
+    String value = part[1];
+
+    System.out.println("Command: " + name);
+    System.out.println("Data: " + value);
+
+    switch (name) {
+      case "INSERT" -> {
+        MessageController.sendMessage(botMoveStatus, socket);
+        insertBotMove(value);
+      }
+      case "DELETE" -> {
+        deleteStone(value);
+        botMove();
+      }
+    }
+  }
+
+  private void insertBotMove(String value) {
+
+    if (Objects.equals(value, "TRUE")) {
+      String botMove = MessageController.receiveMessage(socket);
+
+      int row = reconvertPosition(botMove.charAt(0));
+      int col = reconvertPosition(botMove.charAt(1));
+
+      MyLogger.logger.log(Level.INFO, "Bot's move: " + botMove.charAt(0) + " " + botMove.charAt(1));
+      stones[row][col].put(false, botMove.charAt(0), botMove.charAt(1));
+    } else {
+      botMove();
+    }
+  }
+
 
   private void insertStone(String value, Stone stone, char rowChar, char colChar) {
     switch (value) {
@@ -124,9 +151,7 @@ public class BoardGame {
         moves.add(new Move(Player, rowChar, colChar));
         stone.put(Player, rowChar, colChar);
         MyLogger.logger.log(Level.INFO, "Stone put: " + rowChar + colChar);
-        Player = !Player;
-        String text = (Player) ? "Current player: Black" : "Current player: White";
-        label.setText(text);}
+      }
       case "FALSE" -> {
         MyLogger.logger.log(Level.INFO, "Stone wasn't put: " + rowChar + colChar);
         label.setText("You can't add a stone here!");
@@ -134,15 +159,6 @@ public class BoardGame {
     }
   }
 
-  private void deleteStone(String value) {
-    int row = reconvertPosition(value.charAt(0));
-    int col = reconvertPosition(value.charAt(1));
-
-    stones[row][col].remove();
-
-    label.setText("Last breath!");
-    MyLogger.logger.log(Level.INFO, "Deleting: " + value);
-  }
 
   private char convertPosition(int position) {
     return (position < 10) ? (char) ('0' + position) : (char) ('A' + position - 10);
@@ -158,25 +174,22 @@ public class BoardGame {
     }
   }
 
+  private void deleteStone(String value) {
+    int row = reconvertPosition(value.charAt(0));
+    int col = reconvertPosition(value.charAt(1));
 
-  //TODO: this
-  private void endGame() {
-    label.setText("Game finished!");
-    button.setDisable(true);
+    stones[row][col].remove();
 
-    for (int row = 0; row < size; row++) {
-      for (int col = 0; col < size; col++) {
-        stones[row][col].setDisable(true);
-      }
-      }
-    System.out.println(moves);
-    MessageController.sendMessage("SAVE " + "none", socket);
+    label.setText("Last breath!");
+    MyLogger.logger.log(Level.INFO, "Deleting: " + value);
   }
 
-  //TODO: this
-  private void initializeComputer() {
-    System.out.println("dont be sad :((");
 
+  @FXML
+  private void passClicked() {
+
+    MyLogger.logger.log(Level.INFO, "Player passed :(");
   }
+
 
 }

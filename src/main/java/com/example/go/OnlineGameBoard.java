@@ -12,7 +12,7 @@ import java.net.Socket;
 import java.util.Objects;
 import java.util.logging.Level;
 
-public class OnlineBoardGame implements Runnable{
+public class OnlineGameBoard implements Runnable{
 
   @FXML
   private GridPane gp = new GridPane();
