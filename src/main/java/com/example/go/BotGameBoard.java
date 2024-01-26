@@ -8,6 +8,7 @@ import javafx.scene.layout.GridPane;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class BotGameBoard {
@@ -28,7 +29,7 @@ public class BotGameBoard {
   ArrayList<Move> moves = new ArrayList<Move>();
 
 
-  public void initialize(int size,  Socket socket) {
+  public void initialize(int size, Socket socket) {
     this.size = size;
     this.socket = socket;
 
@@ -61,12 +62,12 @@ public class BotGameBoard {
         stone.setOnMouseClicked(event -> {
           MyLogger.logger.log(Level.INFO, "Stone clicked!");
 
-         // passes = 0;
+          // passes = 0;
 
           char rowChar = convertPosition(finalRow);
           char colChar = convertPosition(finalCol);
 
-         if (!stone.isPut()) {
+          if (!stone.isPut()) {
 
 
             //stone.setOpacity(0.0);   //TODO: why is it here and what is it doing?
@@ -98,23 +99,49 @@ public class BotGameBoard {
         insertStone(value, stone, rowChar, colChar);
         botMove();
       }
-
-     // case "DELETE" -> {
-     //   deleteStone(value);
-     //   receiveMessage(stone, rowChar, colChar);
-     // }
+      case "DELETE" -> {
+        deleteStone(value);
+        receiveMessage(stone, rowChar, colChar);
+      }
     }
 
   }
 
   private void botMove() {
-    String botMove = MessageController.receiveMessage(socket);
+    String botMoveStatus = MessageController.receiveMessage(socket);
 
-    int row = reconvertPosition(botMove.charAt(0));
-    int col = reconvertPosition(botMove.charAt(1));
+    String[] part = botMoveStatus.split("\\s+");
+    String name = part[0];
+    String value = part[1];
 
-    MyLogger.logger.log(Level.INFO,"Bot's move: " + botMove.charAt(0) + " " + botMove.charAt(1));
-    stones[row][col].put(false, botMove.charAt(0), botMove.charAt(1));
+    System.out.println("Command: " + name);
+    System.out.println("Data: " + value);
+
+    switch (name) {
+      case "INSERT" -> {
+        MessageController.sendMessage(botMoveStatus, socket);
+        insertBotMove(value);
+      }
+      case "DELETE" -> {
+        deleteStone(value);
+        botMove();
+      }
+    }
+  }
+
+  private void insertBotMove(String value) {
+
+    if (Objects.equals(value, "TRUE")) {
+      String botMove = MessageController.receiveMessage(socket);
+
+      int row = reconvertPosition(botMove.charAt(0));
+      int col = reconvertPosition(botMove.charAt(1));
+
+      MyLogger.logger.log(Level.INFO, "Bot's move: " + botMove.charAt(0) + " " + botMove.charAt(1));
+      stones[row][col].put(false, botMove.charAt(0), botMove.charAt(1));
+    } else {
+      botMove();
+    }
   }
 
 
@@ -123,7 +150,8 @@ public class BotGameBoard {
       case "TRUE" -> {
         moves.add(new Move(Player, rowChar, colChar));
         stone.put(Player, rowChar, colChar);
-        MyLogger.logger.log(Level.INFO, "Stone put: " + rowChar + colChar);}
+        MyLogger.logger.log(Level.INFO, "Stone put: " + rowChar + colChar);
+      }
       case "FALSE" -> {
         MyLogger.logger.log(Level.INFO, "Stone wasn't put: " + rowChar + colChar);
         label.setText("You can't add a stone here!");
@@ -144,6 +172,16 @@ public class BotGameBoard {
     } else {
       throw new IllegalArgumentException("Invalid character: " + character);
     }
+  }
+
+  private void deleteStone(String value) {
+    int row = reconvertPosition(value.charAt(0));
+    int col = reconvertPosition(value.charAt(1));
+
+    stones[row][col].remove();
+
+    label.setText("Last breath!");
+    MyLogger.logger.log(Level.INFO, "Deleting: " + value);
   }
 
 
