@@ -28,6 +28,22 @@ public class BotGameBoard {
   boolean Player = true;
   ArrayList<Move> moves = new ArrayList<Move>();
 
+  @FXML
+  private void passClicked() {
+    MessageController.sendMessage("PASS " + "none", socket);
+    String doesBotPass = MessageController.receiveMessage(socket);
+
+    switch (doesBotPass) {
+      case "YES" -> endGame();
+        case "NO" ->
+    }
+  }
+
+  private void endGame() {
+
+  }
+
+
 
   public void initialize(int size, Socket socket) {
     this.size = size;
@@ -180,7 +196,6 @@ public class BotGameBoard {
 
     stones[row][col].remove();
 
-    label.setText("Last breath!");
     MyLogger.logger.log(Level.INFO, "Deleting: " + value);
   }
 

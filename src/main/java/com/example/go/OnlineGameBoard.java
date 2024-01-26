@@ -108,7 +108,6 @@ public class OnlineGameBoard implements Runnable{
   }
 
   private void whatAnswer(String answer) throws IOException, InterruptedException {
-    System.out.println("DUPA!!");
     String[] part = answer.split("\\s+");
     String name = part[0];
     String value = part[1];
@@ -137,7 +136,6 @@ public class OnlineGameBoard implements Runnable{
   }
 
   private void insertStone(String value) throws InterruptedException, IOException {
-    System.out.println("DUPA!");
 
     switch (value) {
       case "TRUE" -> {
@@ -161,7 +159,6 @@ public class OnlineGameBoard implements Runnable{
         MyLogger.logger.log(Level.INFO, "Stone put: " + where.charAt(0) + where.charAt(1));
         }
       case "FALSE" -> {
-        System.out.println("DUPA");
         MyLogger.logger.log(Level.INFO, "Stone wasn't put: " + value);
         Platform.runLater(() -> label.setText("You can't add a stone here!"));
 

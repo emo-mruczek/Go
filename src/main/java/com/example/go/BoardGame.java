@@ -42,13 +42,13 @@ public class BoardGame {
     passes++;
     System.out.println(passes);
 
-    if (passes > 1) {
-      endGame();
-    }
-
     String text = (Player) ? "Current player: Black" : "Current player: White";
     label.setText(text);
     MyLogger.logger.log(Level.INFO, "Player passed :(");
+
+    if (passes > 1) {
+      endGame();
+    }
   }
 
   private void drawBoard() {
@@ -157,11 +157,7 @@ public class BoardGame {
       throw new IllegalArgumentException("Invalid character: " + character);
     }
   }
-
-
-  //TODO: this
   private void endGame() {
-    label.setText("Game finished!");
     button.setDisable(true);
 
     for (int row = 0; row < size; row++) {
@@ -170,7 +166,12 @@ public class BoardGame {
       }
       }
     System.out.println(moves);
-    MessageController.sendMessage("SAVE " + "none", socket);
+    MessageController.sendMessage("END " + "none", socket);
+    String winner = MessageController.receiveMessage(socket);
+    switch (winner) {
+      case "1" -> label.setText("BLACK is the winner!");
+      case "2" -> label.setText("WHITE is the winner!");
+    }
   }
 
   //TODO: this
