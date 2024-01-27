@@ -31,6 +31,7 @@ public class OnlineGameBoard implements Runnable{
   private boolean PlayerButBool;
   private char rowSelected;
   private char colSelected;
+  private boolean pass = false;
 
   Socket socket;
   String Player;
@@ -53,8 +54,12 @@ public class OnlineGameBoard implements Runnable{
     thread.start();
   }
 
+
+
   @Override
   public void run() {
+    button.setDisable(true);
+
     try {
 
     if(PlayerButBool) {
@@ -69,9 +74,11 @@ public class OnlineGameBoard implements Runnable{
     while (continueToPlay) {
       if (PlayerButBool) {
         MyLogger.logger.log(Level.INFO, "I'm waiting for an action!");
+        button.setDisable(false);
         waitForPlayerAction();
         MyLogger.logger.log(Level.INFO, "I'm sending a move");
         sendMove();
+        button.setDisable(true);
         MyLogger.logger.log(Level.INFO, "I'm waiting for a message!");
         receiveMessage();
       }
@@ -79,9 +86,11 @@ public class OnlineGameBoard implements Runnable{
         MyLogger.logger.log(Level.INFO, "I'm waiting for a message!");
         receiveMessage();
         MyLogger.logger.log(Level.INFO, "I'm waiting for an action!");
+        button.setDisable(false);
         waitForPlayerAction();
         MyLogger.logger.log(Level.INFO, "I'm sending a move");
         sendMove();
+        button.setDisable(true);
       }
 
     }
@@ -91,20 +100,53 @@ public class OnlineGameBoard implements Runnable{
 
   }
 
+
+  @FXML
+  private void passClicked() {
+    pass = true;
+    waiting = false;
+    myTurn = false;
+  }
+
+
   private void receiveMessage() throws IOException, InterruptedException {
     String answer= MessageController.receiveMessage(socket);
+    Platform.runLater(() -> label.setText("Your turn!"));
 
     whatAnswer(answer);
-
-    Platform.runLater(() -> label.setText("Your turn!"));
     myTurn = true;
   }
 
   private void sendMove() throws IOException, InterruptedException {
+    if (pass) {
+
+      MessageController.sendMessage("PASS", socket);
+      String isGameFinished = MessageController.receiveMessage(socket);
+      if(Objects.equals(isGameFinished, "YES")) {
+        endGame();
+      }
+    } else {
     int color = (PlayerButBool) ? 1 : 2;
     MessageController.sendMessage(rowSelected + String.valueOf(colSelected) + color, socket);
     String answer = MessageController.receiveMessage(socket);
     whatAnswer(answer);
+    }
+  }
+
+  private void endGame() {
+    button.setDisable(true);
+
+    for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
+        stones[row][col].setDisable(true);
+      }
+    }
+    String winner = MessageController.receiveMessage(socket);
+    button.setDisable(true);
+    switch (winner) {
+      case "1" ->  Platform.runLater(() ->label.setText("BLACK is the winner!"));
+      case "2" ->  Platform.runLater(() ->label.setText("WHITE is the winner!"));
+    }
   }
 
   private void whatAnswer(String answer) throws IOException, InterruptedException {
@@ -122,9 +164,20 @@ public class OnlineGameBoard implements Runnable{
         String another = MessageController.receiveMessage(socket);
         whatAnswer(another);
       }
+      case "PASS" -> {
+        isGameFinished(value);
+      }
     }
 
   }
+  private void isGameFinished(String value) {
+    if(Objects.equals(value, "END")) {
+      endGame();
+    } else {
+      Platform.runLater(() -> label.setText("Opponent has passed (away)."));
+    }
+  }
+
 
   private void deleteStone(String value) {
     int row = reconvertPosition(value.charAt(0));
@@ -170,8 +223,6 @@ public class OnlineGameBoard implements Runnable{
     }
   }
 
-
-
   private void waitForPlayerAction() throws InterruptedException {
     while (waiting) {
       Thread.sleep(100);
@@ -205,23 +256,16 @@ public class OnlineGameBoard implements Runnable{
         stone.setOnMouseClicked(event -> {
           MyLogger.logger.log(Level.INFO, "Stone clicked!");
 
-         // passes = 0;
-
           char rowChar = convertPosition(finalRow);
           char colChar = convertPosition(finalCol);
 
           if (!stone.isPut() && myTurn) {
+            pass = false;
             rowSelected = rowChar;
             colSelected = colChar;
             Platform.runLater(() -> label.setText("Waiting for the other player to move"));
             waiting = false;
             myTurn = false;
-            //int color = (Player) ? 1 : 2;  //TODO: is it ok???
-
-          //  MessageController.sendMessage("INSERT " + rowChar + colChar + color, socket);
-
-           // receiveMessage(stone, rowChar, colChar);
-
           }
         });
         GridPane.setHalignment(stone, HPos.CENTER);
@@ -264,10 +308,5 @@ public class OnlineGameBoard implements Runnable{
     return Character.getNumericValue(colorChar);
   }
 
-  @FXML
-  private void passClicked() {
-
-    System.out.println("Nie klikaj gdzie popadnie!");
-  }
 
 }

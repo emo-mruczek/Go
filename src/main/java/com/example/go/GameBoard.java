@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-public class BoardGame {
+public class GameBoard {
   @FXML
   private GridPane gp = new GridPane();
   @FXML
@@ -27,7 +27,7 @@ public class BoardGame {
   ArrayList<Move> moves = new ArrayList<Move>();
 
 
-  public void initialize(int size, boolean mode, Socket socket) {
+  public void initialize(int size, Socket socket) {
     this.size = size;
     this.socket = socket;
 
@@ -83,14 +83,12 @@ public class BoardGame {
           char colChar = convertPosition(finalCol);
 
           if (!stone.isPut()) {
-            //stone.setOpacity(0.0);   //TODO: why is it here and what is it doing?
 
-            int color = (Player) ? 1 : 2;  //TODO: is it ok???
+            int color = (Player) ? 1 : 2;
 
             MessageController.sendMessage("INSERT " + rowChar + colChar + color, socket);
 
             receiveMessage(stone, rowChar, colChar);
-
           }
         });
         GridPane.setHalignment(stone, HPos.CENTER);

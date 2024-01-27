@@ -37,9 +37,6 @@ public class MainScreenFacade {
   }
 
   @FXML
-  CheckBox PvC = new CheckBox();
-
-  @FXML
   private void smallClicked() {
     MyLogger.logger.log(Level.INFO, "Small clicked!");
 
@@ -66,13 +63,6 @@ public class MainScreenFacade {
 
       Socket socket = new Socket("localhost", 4444);
 
-      if (PvC.isSelected()) {
-        mode = true;
-        // MessageController.sendMessage("PVC", socket);
-      } else {
-        // MessageController.sendMessage("PVP", socket);
-      }
-
       String message = String.valueOf(size);
       MessageController.sendMessage(message, socket);
 
@@ -86,8 +76,8 @@ public class MainScreenFacade {
       stage.setScene(scene);
       stage.show();
 
-      BoardGame controller = loader.getController();
-      controller.initialize(size, mode, socket);
+      GameBoard controller = loader.getController();
+      controller.initialize(size, socket);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

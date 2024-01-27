@@ -35,14 +35,25 @@ public class BotGameBoard {
 
     switch (doesBotPass) {
       case "YES" -> endGame();
-        case "NO" ->
+      case "NO" -> botMove();
     }
   }
 
   private void endGame() {
+    button.setDisable(true);
 
+    for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
+        stones[row][col].setDisable(true);
+      }
+    }
+    System.out.println(moves);
+    String winner = MessageController.receiveMessage(socket);
+    switch (winner) {
+      case "1" -> label.setText("BLACK is the winner!");
+      case "2" -> label.setText("WHITE is the winner!");
+    }
   }
-
 
 
   public void initialize(int size, Socket socket) {
@@ -84,9 +95,6 @@ public class BotGameBoard {
           char colChar = convertPosition(finalCol);
 
           if (!stone.isPut()) {
-
-
-            //stone.setOpacity(0.0);   //TODO: why is it here and what is it doing?
 
             MessageController.sendMessage("INSERT " + rowChar + colChar + color, socket);
 
@@ -198,13 +206,5 @@ public class BotGameBoard {
 
     MyLogger.logger.log(Level.INFO, "Deleting: " + value);
   }
-
-
-  @FXML
-  private void passClicked() {
-
-    MyLogger.logger.log(Level.INFO, "Player passed :(");
-  }
-
 
 }
