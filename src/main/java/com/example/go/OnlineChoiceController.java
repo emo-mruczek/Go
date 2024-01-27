@@ -47,18 +47,9 @@ public class OnlineChoiceController {
         String message = String.valueOf(size);
         MessageController.sendMessage(message, socket);
       }
-
       System.out.println("Hi! I'm here and i am " + player);
 
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("online-board-view.fxml"));
-      Scene scene = new Scene(loader.load());
-      Stage stage = new Stage();
-
-      stage.setOnCloseRequest(event -> MessageController.sendMessage("BYE " + "none", socket));
-
-      stage.setTitle("Go");
-      stage.setScene(scene);
-      stage.show();
+      FXMLLoader loader = ScreenInitializer.initialize("online-board-view.fxml", "Go", socket);
 
       OnlineGameBoard controller = loader.getController();
       controller.initialize(size, socket, player);

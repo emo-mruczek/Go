@@ -52,19 +52,10 @@ public class ListController {
 
       MessageController.sendMessage(String.valueOf(game.getId()), socket);
       String movesList = MessageController.receiveMessage(socket);
-      System.out.println(movesList);
 
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("recap-view.fxml"));
-      Scene scene = new Scene(loader.load());
-      Stage stage = new Stage();
-
-      stage.setTitle("Recap");
-      stage.setScene(scene);
-      stage.show();
-
+      FXMLLoader loader = ScreenInitializer.initialize("recap-view.fxml", "Recap", socket);
       BoardRecap controller = loader.getController();
       controller.initialize(game, movesList);
-
     } catch (IOException e)  {
       throw new RuntimeException(e);
     }
