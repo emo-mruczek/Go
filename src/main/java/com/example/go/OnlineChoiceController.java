@@ -10,35 +10,7 @@ import java.net.Socket;
 import java.util.Objects;
 import java.util.logging.Level;
 
-public class OnlineChoiceController {
-
-  private static Socket socket;
-
-  @FXML
-  private void smallClicked() {
-    MyLogger.logger.log(Level.INFO, "Small clicked!");
-
-    initializeBoard(9, "FIRST");
-  }
-
-  @FXML
-  private void mediumClicked() {
-    MyLogger.logger.log(Level.INFO, "Medium clicked!");
-
-    initializeBoard(13, "FIRST");
-  }
-
-  @FXML
-  private void largeClicked() {
-    MyLogger.logger.log(Level.INFO, "Large clicked");
-
-    initializeBoard(19, "FIRST");
-  }
-
-  public void initialize(Socket socket) {
-    this.socket = socket;
-  }
-
+public class OnlineChoiceController extends ChoiceController {
  public void initializeBoard(int size, String player) {
     try {
       MyLogger.logger.log(Level.INFO, "Initializing " + size + "x" + size + " board!");
