@@ -19,11 +19,9 @@ public class Stone extends Circle {
     this.player = player;
     this.rowChar = rowChar;
     this.colChar = colChar;
-
     setColor(player);
     setOpacity(1.0);
     isPut = true;
-
     MyLogger.logger.log(Level.INFO, "Im put on: " + rowChar + " " + colChar);
   }
 

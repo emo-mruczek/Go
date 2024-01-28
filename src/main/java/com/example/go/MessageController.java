@@ -26,7 +26,6 @@ public class MessageController {
       BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       String serverResponse = in.readLine();
       MyLogger.logger.log(Level.INFO, serverResponse);
-
       if (serverResponse != null) {
         return serverResponse;
       } else {
