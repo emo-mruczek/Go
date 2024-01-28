@@ -13,7 +13,7 @@ public class ScreenInitializer {
     FXMLLoader loader = new FXMLLoader(ScreenInitializer.class.getResource(view));
     Scene scene = new Scene(loader.load());
     Stage stage = new Stage();
-    stage.setOnCloseRequest(event -> MessageController.sendMessage("BYE " + "none", socket));
+    stage.setOnCloseRequest(event -> MessageController.sendMessage("BYE", socket));
     stage.setTitle(title);
     stage.setScene(scene);
     stage.show();
@@ -24,7 +24,7 @@ public class ScreenInitializer {
     FXMLLoader loader = new FXMLLoader(ScreenInitializer.class.getResource(view));
     Scene scene = new Scene(loader.load());
     Stage stage = new Stage();
-    stage.setOnCloseRequest(event -> MessageController.sendMessage("BYE " + "none", socket));
+    stage.setOnCloseRequest(event -> MessageController.sendMessage("BYE", socket));
     stage.setTitle(title);
     stage.setScene(scene);
     stage.show();
