@@ -127,7 +127,7 @@ private void deleteStone(int ID) {
   public void initialize(Game game, String stringWithMoves) {
     this.game = game;
 
-    int size = 9;
+    int size = game.getSize();
     BoardDrawer.insertImages(gp, size);
 
     String[] listOfMoves = stringWithMoves.split(";");
