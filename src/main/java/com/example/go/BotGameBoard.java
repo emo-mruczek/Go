@@ -1,123 +1,55 @@
 package com.example.go;
 
 import javafx.fxml.FXML;
-import javafx.geometry.HPos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-
-import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.Level;
 
-public class BotGameBoard {
+public class BotGameBoard extends GameBoard {
 
+  @Override
   @FXML
-  private GridPane gp = new GridPane();
-  @FXML
-  private Label label = new Label();
-  @FXML
-  private Button button = new Button();
-
-  private Socket socket;
-  private int size;
-  private Stone[][] stones;
-  double cellSize;
-  int color = 1;
-  boolean Player = true;
-  ArrayList<Move> moves = new ArrayList<Move>();
-
-  @FXML
-  private void passClicked() {
+  protected void passClicked() {
     MessageController.sendMessage("PASS " + "none", socket);
     String doesBotPass = MessageController.receiveMessage(socket);
-
-    switch (doesBotPass) {
+    switch (Objects.requireNonNull(doesBotPass)) {
       case "YES" -> endGame();
       case "NO" -> botMove();
+      default -> throw new IllegalStateException("Unexpected value: " + doesBotPass);
     }
   }
 
-  private void endGame() {
-    button.setDisable(true);
-
-    for (int row = 0; row < size; row++) {
-      for (int col = 0; col < size; col++) {
-        stones[row][col].setDisable(true);
-      }
-    }
-    System.out.println(moves);
+  @Override
+  protected void endGame() {
+    disableButtons();
     String winner = MessageController.receiveMessage(socket);
-    switch (winner) {
+    switch (Objects.requireNonNull(winner)) {
       case "1" -> label.setText("BLACK is the winner!");
       case "2" -> label.setText("WHITE is the winner!");
+      default -> throw new IllegalStateException("Unexpected value: " + winner);
     }
   }
 
+  @Override
+  protected void handleStoneClick(int row, int col, Stone stone) {
+    MyLogger.logger.log(Level.INFO, "Stone clicked!");
 
-  public void initialize(int size, Socket socket) {
-    this.size = size;
-    this.socket = socket;
-
-    drawBoard();
-    addStones();
-  }
-
-  private void drawBoard() {
-    // TODO: clean-up
-    MyLogger.logger.log(Level.INFO, "Drawing a board!");
-
-    cellSize = gp.getWidth() / size;
-    stones = new Stone[size][size];
-
-    BoardDrawer.insertImages(gp, size);
-  }
-
-  private void addStones() {
-    MyLogger.logger.log(Level.INFO, "Adding stones!");
-
-    for (int row = 0; row < size; row++) {
-      for (int col = 0; col < size; col++) {
-        label.setText("You are playing as Black!");
-
-        int finalRow = row;
-        int finalCol = col;
-
-        Stone stone = new Stone(cellSize / 3);
-        stones[row][col] = stone;
-        stone.setOnMouseClicked(event -> {
-          MyLogger.logger.log(Level.INFO, "Stone clicked!");
-
-          // passes = 0;
-
-          char rowChar = convertPosition(finalRow);
-          char colChar = convertPosition(finalCol);
-
-          if (!stone.isPut()) {
-
-            MessageController.sendMessage("INSERT " + rowChar + colChar + color, socket);
-
-            receiveMessage(stone, rowChar, colChar);
-
-          }
-        });
-        GridPane.setHalignment(stone, HPos.CENTER);
-        gp.add(stone, col, row);
-      }
+    char rowChar = Converter.convertPosition(row);
+    char colChar = Converter.convertPosition(col);
+    if (!stone.isPut()) {
+      int color = 1;
+      MessageController.sendMessage("INSERT " + rowChar + colChar + color, socket);
+      receiveMessage(stone, rowChar, colChar);
     }
   }
-
-  private void receiveMessage(Stone stone, char rowChar, char colChar) {
+  @Override
+  protected void receiveMessage(Stone stone, char rowChar, char colChar) {
     String command = MessageController.receiveMessage(socket);
-
+    assert command != null;
     String[] part = command.split("\\s+");
     String name = part[0];
     String value = part[1];
-
     System.out.println("Command: " + name);
     System.out.println("Data: " + value);
-
     switch (name) {
       case "INSERT" -> {
         insertStone(value, stone, rowChar, colChar);
@@ -128,19 +60,16 @@ public class BotGameBoard {
         receiveMessage(stone, rowChar, colChar);
       }
     }
-
   }
 
   private void botMove() {
     String botMoveStatus = MessageController.receiveMessage(socket);
-
+    assert botMoveStatus != null;
     String[] part = botMoveStatus.split("\\s+");
     String name = part[0];
     String value = part[1];
-
     System.out.println("Command: " + name);
     System.out.println("Data: " + value);
-
     switch (name) {
       case "INSERT" -> {
         MessageController.sendMessage(botMoveStatus, socket);
@@ -154,57 +83,15 @@ public class BotGameBoard {
   }
 
   private void insertBotMove(String value) {
-
     if (Objects.equals(value, "TRUE")) {
       String botMove = MessageController.receiveMessage(socket);
-
-      int row = reconvertPosition(botMove.charAt(0));
-      int col = reconvertPosition(botMove.charAt(1));
-
+      assert botMove != null;
+      int row = Converter.reconvertPosition(botMove.charAt(0));
+      int col = Converter.reconvertPosition(botMove.charAt(1));
       MyLogger.logger.log(Level.INFO, "Bot's move: " + botMove.charAt(0) + " " + botMove.charAt(1));
       stones[row][col].put(false, botMove.charAt(0), botMove.charAt(1));
     } else {
       botMove();
     }
   }
-
-
-  private void insertStone(String value, Stone stone, char rowChar, char colChar) {
-    switch (value) {
-      case "TRUE" -> {
-        moves.add(new Move(Player, rowChar, colChar));
-        stone.put(Player, rowChar, colChar);
-        MyLogger.logger.log(Level.INFO, "Stone put: " + rowChar + colChar);
-      }
-      case "FALSE" -> {
-        MyLogger.logger.log(Level.INFO, "Stone wasn't put: " + rowChar + colChar);
-        label.setText("You can't add a stone here!");
-      }
-    }
-  }
-
-
-  private char convertPosition(int position) {
-    return (position < 10) ? (char) ('0' + position) : (char) ('A' + position - 10);
-  }
-
-  private int reconvertPosition(char character) {
-    if (character >= '0' && character <= '9') {
-      return character - '0';
-    } else if (character >= 'A' && character <= 'Z') {
-      return character - 'A' + 10;
-    } else {
-      throw new IllegalArgumentException("Invalid character: " + character);
-    }
-  }
-
-  private void deleteStone(String value) {
-    int row = reconvertPosition(value.charAt(0));
-    int col = reconvertPosition(value.charAt(1));
-
-    stones[row][col].remove();
-
-    MyLogger.logger.log(Level.INFO, "Deleting: " + value);
-  }
-
 }

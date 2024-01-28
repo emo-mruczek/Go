@@ -1,12 +1,9 @@
 package com.example.go;
 
-import java.util.Objects;
-
 public class Move {
- // private int id; i think it is not necessary as array list is sorted
   private boolean player;
-  private char row;
-  private char col;
+  private final char row;
+  private final char col;
   private String timestamp;
   private String type;
   private int ID;

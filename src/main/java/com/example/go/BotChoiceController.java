@@ -1,13 +1,8 @@
 package com.example.go;
 
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.Socket;
-import java.util.Objects;
 import java.util.logging.Level;
 
 public class BotChoiceController extends ChoiceController {
@@ -16,9 +11,7 @@ public class BotChoiceController extends ChoiceController {
     try {
       MyLogger.logger.log(Level.INFO, "Initializing " + size + "x" + size + " board!");
       String message = String.valueOf(size);
-
       FXMLLoader loader = ScreenInitializer.initialize(message, "bot-board-view.fxml", "Go", socket);
-
       BotGameBoard controller = loader.getController();
       controller.initialize(size, socket);
     } catch (IOException e) {

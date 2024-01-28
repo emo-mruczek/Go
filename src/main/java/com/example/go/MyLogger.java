@@ -9,12 +9,10 @@ public class MyLogger {
   }
 
   public static final Logger logger = Logger.getGlobal();
-
   public static void loggerConfig() {
     ConsoleHandler ch = new ConsoleHandler();
     ch.setLevel(Level.INFO);
     logger.addHandler(ch);
-
     logger.setLevel(Level.OFF);
   }
 }

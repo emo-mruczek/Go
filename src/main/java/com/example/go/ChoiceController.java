@@ -10,21 +10,18 @@ public abstract class ChoiceController {
   @FXML
   protected void smallClicked() {
     MyLogger.logger.log(Level.INFO, "Small clicked!");
-
     initializeBoard(9, "FIRST");
   }
 
   @FXML
   protected void mediumClicked() {
     MyLogger.logger.log(Level.INFO, "Medium clicked!");
-
     initializeBoard(13, "FIRST");
   }
 
   @FXML
   protected void largeClicked() {
     MyLogger.logger.log(Level.INFO, "Large clicked");
-
     initializeBoard(19, "FIRST");
   }
 
