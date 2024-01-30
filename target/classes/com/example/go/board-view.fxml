@@ -26,6 +26,11 @@
          <Font name="System Bold" size="18.0" />
       </font>
    </Button>
+   <Button fx:id="button1" mnemonicParsing="false" onAction="#forfeitClicked" prefHeight="44.0" prefWidth="83.0" text="Forfeit">
+      <font>
+         <Font name="System Bold" size="18.0" />
+      </font>
+   </Button>
    <Label fx:id="label" alignment="CENTER" prefHeight="52.0" prefWidth="666.0" textAlignment="CENTER">
       <font>
          <Font name="System Bold" size="22.0" />

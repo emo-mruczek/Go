@@ -58,7 +58,7 @@ public class MainScreenFacade {
     } else {
       MyLogger.logger.log(Level.INFO, "I'm SECOND!");
       String size = MessageController.receiveMessage(socket);
-      OnlineChoiceController ch = new OnlineChoiceController();
+     OnlineChoiceController ch = new OnlineChoiceController();
       ch.initialize(socket);
       assert size != null;
       ch.initializeBoard(Integer.parseInt(size), "SECOND");
