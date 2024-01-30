@@ -25,6 +25,13 @@ public class OnlineGameBoard extends GameBoard implements Runnable  {
   }
 
   @Override
+  @FXML
+  protected void forfeitClicked() {
+    MessageController.sendMessage("FORFEIT", socket);
+    endGame();
+  }
+
+  @Override
   public void initialize(int size, Socket socket) {
     this.socket = socket;
     this.size = size;
@@ -149,8 +156,8 @@ public class OnlineGameBoard extends GameBoard implements Runnable  {
       case "TRUE" -> {
         String where = MessageController.receiveMessage(socket);
         assert where != null;
-        int row = Converter.getChar(where.charAt(0));
-        int col = Converter.getChar(where.charAt(1));
+        int row = Converter.reconvertPosition(where.charAt(0));
+        int col = Converter.reconvertPosition(where.charAt(1));
         int color = getColor(where.charAt(2));
         boolean currPlayer;
         currPlayer = color == 1;
