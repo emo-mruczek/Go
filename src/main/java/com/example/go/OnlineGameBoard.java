@@ -112,6 +112,7 @@ public class OnlineGameBoard extends GameBoard implements Runnable  {
     switch (Objects.requireNonNull(winner)) {
       case "1" -> Platform.runLater(() -> label.setText("BLACK is the winner!"));
       case "2" -> Platform.runLater(() -> label.setText("WHITE is the winner!"));
+      case "0" -> Platform.runLater(() -> label.setText("Draw!"));
     }
   }
 

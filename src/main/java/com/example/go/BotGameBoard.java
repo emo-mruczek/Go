@@ -25,6 +25,7 @@ public class BotGameBoard extends GameBoard {
     switch (Objects.requireNonNull(winner)) {
       case "1" -> label.setText("BLACK is the winner!");
       case "2" -> label.setText("WHITE is the winner!");
+      case "0" -> label.setText("Draw!");
       default -> throw new IllegalStateException("Unexpected value: " + winner);
     }
   }
