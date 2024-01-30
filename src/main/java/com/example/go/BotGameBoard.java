@@ -17,6 +17,14 @@ public class BotGameBoard extends GameBoard {
       default -> throw new IllegalStateException("Unexpected value: " + doesBotPass);
     }
   }
+  @Override
+  @FXML
+  protected void forfeitClicked() {
+    MyLogger.logger.log(Level.INFO, "Forfeit clicked!");
+    MessageController.sendMessage("FORFEIT "+ "none", socket);
+    String nothing = MessageController.receiveMessage(socket);
+    endGame();
+  }
 
   @Override
   protected void endGame() {

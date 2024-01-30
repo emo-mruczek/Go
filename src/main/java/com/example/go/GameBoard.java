@@ -24,6 +24,10 @@ public class GameBoard {
   protected void passClicked() {
   }
 
+  @FXML
+  protected void forfeitClicked() {
+  }
+
   public void initialize(int size, Socket socket) {
     this.size = size;
     this.socket = socket;

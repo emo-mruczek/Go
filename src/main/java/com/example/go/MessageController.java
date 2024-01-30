@@ -13,6 +13,7 @@ public class MessageController {
   public static void sendMessage(String message, Socket socket) {
     try {
       PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+      MyLogger.logger.log(Level.INFO, message);
       out.println(message);
     } catch (UnknownHostException e) {
       System.out.println("Server not found: " + e.getMessage());
@@ -20,7 +21,7 @@ public class MessageController {
       System.out.println("I/O error: " + e.getMessage());
     }
   }
-
+  
   public static String receiveMessage(Socket socket) {
     try {
       BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

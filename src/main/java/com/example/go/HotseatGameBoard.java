@@ -7,6 +7,14 @@ import java.util.logging.Level;
 
 public class HotseatGameBoard extends GameBoard {
   int passes = 0;
+
+  @Override
+  @FXML
+  protected void forfeitClicked() {
+    MyLogger.logger.log(Level.INFO, "Forfeit clicked!");
+    endGame();
+  }
+
   @Override
   @FXML
   protected void passClicked() {
