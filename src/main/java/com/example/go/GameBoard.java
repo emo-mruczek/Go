@@ -17,6 +17,8 @@ public class GameBoard {
   protected  Label label = new Label();
   @FXML
   protected  Button button = new Button();
+  @FXML
+  protected  Button button1 = new Button();
   protected  int size;
   protected  Socket socket;
   protected  Stone[][] stones;
@@ -73,6 +75,7 @@ public class GameBoard {
 
   protected void disableButtons() {
     button.setDisable(true);
+    button1.setDisable(true);
     for (int row = 0; row < size; row++) {
       for (int col = 0; col < size; col++) {
         stones[row][col].setDisable(true);
