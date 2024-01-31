@@ -11,8 +11,15 @@ public class HotseatGameBoard extends GameBoard {
   @Override
   @FXML
   protected void forfeitClicked() {
+    disableButtons();
     MyLogger.logger.log(Level.INFO, "Forfeit clicked!");
-    endGame();
+    String stringPlayer = (Player) ? "1" : "2";
+    MessageController.sendMessage("FORFEIT " + stringPlayer, socket);
+    if (Player) {
+      label.setText("WHITE is the winner!");
+    } else {
+      label.setText("BLACK is the winner!");
+    }
   }
 
   @Override

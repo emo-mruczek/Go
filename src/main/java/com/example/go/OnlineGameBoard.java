@@ -27,8 +27,15 @@ public class OnlineGameBoard extends GameBoard implements Runnable  {
   @Override
   @FXML
   protected void forfeitClicked() {
-    MessageController.sendMessage("FORFEIT", socket);
-    endGame();
+    disableButtons();
+    MyLogger.logger.log(Level.INFO, "Forfeit clicked!");
+    MessageController.sendMessage("FORFEIT", socket );
+    MessageController.sendMessage(PlayerString, socket);
+    if (Objects.equals(PlayerString, "BLACK")) {
+      Platform.runLater(() -> label.setText("WHITE is the winner!"));
+    } else {
+      Platform.runLater(() -> label.setText("BLACK is the winner!"));
+    }
   }
 
   @Override
@@ -50,6 +57,7 @@ public class OnlineGameBoard extends GameBoard implements Runnable  {
   @Override
   public void run() {
     button.setDisable(true);
+    button1.setDisable(true);
     try {
       if (Player) {
         Platform.runLater(() -> label.setText("Waiting for the second player..."));
@@ -63,11 +71,13 @@ public class OnlineGameBoard extends GameBoard implements Runnable  {
         if (Player) {
           MyLogger.logger.log(Level.INFO, "I'm waiting for an action!");
           button.setDisable(false);
+          button1.setDisable(false);
           waitForPlayerAction();
 
           MyLogger.logger.log(Level.INFO, "I'm sending a move");
           sendMove();
           button.setDisable(true);
+          button1.setDisable(true);
 
           MyLogger.logger.log(Level.INFO, "I'm waiting for a message!");
           receiveMessage();
@@ -77,11 +87,13 @@ public class OnlineGameBoard extends GameBoard implements Runnable  {
 
           MyLogger.logger.log(Level.INFO, "I'm waiting for an action!");
           button.setDisable(false);
+          button1.setDisable(false);
           waitForPlayerAction();
 
           MyLogger.logger.log(Level.INFO, "I'm sending a move");
           sendMove();
           button.setDisable(true);
+          button1.setDisable(true);
         }
       }
     } catch (IOException | InterruptedException ignored) {
@@ -139,16 +151,23 @@ public class OnlineGameBoard extends GameBoard implements Runnable  {
       }
       case "PASS" ->
         isGameFinished(value);
-
+      case "FORFEIT" -> {
+        MyLogger.logger.log(Level.INFO, "Opponent had forfeited!");
+        disableButtons();
+        if (Objects.equals(PlayerString, "BLACK")) {
+          Platform.runLater(() -> label.setText("BLACK forfeited. WHITE is the winner!"));
+        } else {
+          Platform.runLater(() -> label.setText("WHITE forfeited. BLACK is the winner!"));
+        }
+      }
     }
-
   }
 
   private void isGameFinished(String value) {
     if (Objects.equals(value, "END")) {
       endGame();
     } else {
-      Platform.runLater(() -> label.setText("Opponent has passed (away)."));
+      Platform.runLater(() -> label.setText("Opponent has passed."));
     }
   }
 

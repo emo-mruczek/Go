@@ -1,6 +1,8 @@
 package com.example.go;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+
 import java.util.Objects;
 import java.util.logging.Level;
 
@@ -22,8 +24,9 @@ public class BotGameBoard extends GameBoard {
   protected void forfeitClicked() {
     MyLogger.logger.log(Level.INFO, "Forfeit clicked!");
     MessageController.sendMessage("FORFEIT "+ "none", socket);
-    String nothing = MessageController.receiveMessage(socket);
-    endGame();
+    //String nothing = MessageController.receiveMessage(socket);
+    disableButtons();
+    label.setText("WHITE is the winner!");
   }
 
   @Override
